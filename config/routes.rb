@@ -3,6 +3,7 @@ Rails.application.routes.draw do
     namespace :v1 do
       get 'sectors', to: 'sectors#index'
       get 'countries', to: 'countries#index'
+      get 'statistics', to: 'statistics#index'
     end
   end
 
