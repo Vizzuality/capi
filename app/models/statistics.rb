@@ -1,13 +1,13 @@
 class Statistics < CartoDb
 
-  attr_reader :start_date, :end_date, :sectors_slug, :countries_slug
+  attr_reader :start_date, :end_date, :sectors_slug, :countries_iso
 
   def initialize hsh
     @start_date = hsh[:start_date]
     @end_date = hsh[:end_date]
     @sectors_slug = hsh[:sectors_slug] && hsh[:sectors_slug].map {|t| "'#{t}'"}.
       join(",")
-    @countries_slug = hsh[:countries_slug] && hsh[:countries_slug].map {|t| "'#{t}'"}.
+    @countries_iso = hsh[:countries_iso] && hsh[:countries_iso].map {|t| "'#{t}'"}.
       join(",")
   end
 
@@ -33,8 +33,8 @@ class Statistics < CartoDb
       q << ["date BETWEEN '#{Date.parse(@start_date)}' AND '#{Date.parse(@end_date)}'"]
     end
     q << ["sectors IN (#{@sectors_slug})"] if @sectors_slug
-    if @countries_slug
-      q << ["string_to_array(countries, '|') %26%26 string_to_array(#{@countries_slug}, ',')"]
+    if @countries_iso
+      q << ["string_to_array(countries, '|') %26%26 string_to_array(#{@countries_iso}, ',')"]
     end
     return q.empty? ? "" : "WHERE " + q.join(" AND ")
   end

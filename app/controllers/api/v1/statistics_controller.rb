@@ -8,6 +8,6 @@ class Api::V1::StatisticsController < ApiController
 
   def stats_params
     params.permit(:start_date, :end_date, sectors_slug: [],
-                  countries_slug: [])
+                  countries_iso: [])
   end
 end
