@@ -11,12 +11,11 @@ class CartoDb
     private
 
     def list_query
-      <<-SQL
-        SELECT #{columns.join(", ")}
-        FROM #{table_name}
-        WHERE #{columns.map{|c| "#{c} IS NOT NULL"}.join(" AND ")}
-        ORDER BY #{order_column}
-      SQL
+      %Q(
+      SELECT #{columns.join(", ")} FROM #{table_name}
+      WHERE #{columns.map{|c| "#{c} IS NOT NULL"}.join(" AND ")}
+      ORDER BY #{order_column}
+      )
     end
 
     def parse_data data
