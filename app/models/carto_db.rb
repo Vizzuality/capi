@@ -2,10 +2,15 @@ class CartoDb
   include ActiveModel::Serialization
 
   class << self
-    def all
+
+    def send_query query
       api_call = Cartowrap::API.new
-      results = api_call.send_query(list_query)
-      parse_data(results)
+      JSON.parse(api_call.send_query(query))
+    end
+
+    def all
+      results = send_query(list_query)
+      parse(results)
     end
 
     private
@@ -18,8 +23,8 @@ class CartoDb
       )
     end
 
-    def parse_data data
-      JSON.parse(data)["rows"].map do |row|
+    def parse data
+      data["rows"].map do |row|
         self.new(row)
       end
     end
