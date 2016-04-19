@@ -4,6 +4,7 @@ Rails.application.routes.draw do
       get 'sectors', to: 'sectors#index'
       get 'countries', to: 'countries#index'
       get 'statistics', to: 'statistics#index'
+      get 'layers', to: 'layers#index'
     end
   end
 
