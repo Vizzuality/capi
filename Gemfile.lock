@@ -1,3 +1,12 @@
+GIT
+  remote: http://github.com/tiagojsag/cartowrap.git
+  revision: 098b476ed36e4651cdf494e5982afaf8598daf30
+  branch: fix/extra-character-in-method
+  specs:
+    cartowrap (0.1.0)
+      faraday
+      multi_json
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -43,9 +52,6 @@ GEM
     arel (7.0.0)
     builder (3.2.2)
     byebug (8.2.2)
-    cartowrap (0.1.0)
-      faraday
-      multi_json
     concurrent-ruby (1.0.1)
     dotenv (2.1.0)
     dotenv-rails (2.1.0)
@@ -138,7 +144,7 @@ PLATFORMS
 DEPENDENCIES
   active_model_serializers
   byebug
-  cartowrap (= 0.1.0)
+  cartowrap!
   dotenv-rails
   listen (~> 3.0.5)
   pg
