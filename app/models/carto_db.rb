@@ -30,7 +30,7 @@ class CartoDb
     end
 
     def table_name
-      self.to_s.downcase
+      self.to_s.downcase.pluralize
     end
 
     def columns

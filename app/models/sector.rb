@@ -12,8 +12,4 @@ class Sector < CartoDb
   def self.columns
     ["slug", "name"]
   end
-
-  def self.table_name
-    "sectors_care"
-  end
 end
