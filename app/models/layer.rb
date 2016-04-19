@@ -1,4 +1,4 @@
-class Country < CartoDb
+class Layer < CartoDb
 
   attr_reader :slug, :name, :category, :geo_query, :geo_cartocss,
     :layer_type, :legend_type, :number_of_buckets
