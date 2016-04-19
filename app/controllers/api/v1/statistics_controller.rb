@@ -7,6 +7,7 @@ class Api::V1::StatisticsController < ApiController
   private
 
   def stats_params
-    params.permit(:start_date, :end_date, :sectors_slug, :countries_slug)
+    params.permit(:start_date, :end_date, sectors_slug: [],
+                  countries_slug: [])
   end
 end

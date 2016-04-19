@@ -1,0 +1,47 @@
+class Statistics < CartoDb
+
+  attr_reader :start_date, :end_date, :sectors_slug, :countries_slug
+
+  def initialize hsh
+    @start_date = hsh[:start_date]
+    @end_date = hsh[:end_date]
+    @sectors_slug = hsh[:sectors_slug] && hsh[:sectors_slug].map {|t| "'#{t}'"}.
+      join(",")
+    @countries_slug = hsh[:countries_slug] && hsh[:countries_slug].map {|t| "'#{t}'"}.
+      join(",")
+  end
+
+  def fetch
+    results = Statistics.send_query(stats_query)
+    {
+      total_donations: results["rows"].first["total_donations"],
+      total_funds: results["rows"].first["total_funds"]
+    }
+  end
+
+  def stats_query
+    %Q(
+      SELECT COUNT(*) AS total_donations, SUM(amount) AS total_funds
+      FROM #{Statistics.table_name}
+      #{where_clause}
+    )
+  end
+
+  def where_clause
+    q = []
+    if @start_date && @end_date
+      q << ["date BETWEEN '#{Date.parse(@start_date)}' AND '#{Date.parse(@end_date)}'"]
+    end
+    q << ["sectors IN (#{@sectors_slug})"] if @sectors_slug
+    if @countries_slug
+      q << ["string_to_array(countries, '|') %26%26 string_to_array(#{@countries_slug}, ',')"]
+    end
+    return q.empty? ? "" : "WHERE " + q.join(" AND ")
+  end
+
+  private
+
+  def self.table_name
+    "care_donors_v02"
+  end
+end
