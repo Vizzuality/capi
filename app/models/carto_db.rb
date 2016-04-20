@@ -24,6 +24,7 @@ class CartoDb
     end
 
     def parse data
+      return [] unless data["rows"]
       data["rows"].map do |row|
         self.new(row)
       end
