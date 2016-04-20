@@ -1,0 +1,25 @@
+class Api::V1::DonationsController < ApiController
+  def index
+    @result = {
+      "name": "Name of donation",
+      "location": {
+        "iso": "PRT",
+        "name": "Portugal"
+      },
+      "total_funds": 160000,
+      "sectors": [
+        {
+          "slug": "water",
+          "name": "Water and Sanitation"
+        }
+      ],
+      "countries": [
+        {
+          "iso": "PRT",
+          "name": "Portugal"
+        }
+      ]
+    }
+    render json: @result
+  end
+end
