@@ -13,6 +13,10 @@ class CartoDb
       parse(results)
     end
 
+    def create_in_batch(records)
+      send_query(create_in_batch_query(records))
+    end
+
     private
 
     def list_query
@@ -20,6 +24,25 @@ class CartoDb
       SELECT #{columns.join(", ")} FROM #{table_name}
       WHERE #{columns.map{|c| "#{c} IS NOT NULL"}.join(" AND ")}
       ORDER BY #{order_column}
+      )
+    end
+
+    def create_in_batch_query records
+      values = []
+      records.each do |r|
+        row = []
+        columns.each do |col|
+          row << formatted_value(col.to_sym, r[col])
+        end
+        values << "(#{row.compact.join(", ")})" unless row.compact.empty?
+      end
+      insert_header + values.join(", ")
+    end
+
+    def insert_header
+      %Q(
+        INSERT INTO #{table_name} (#{columns.join(", ")})
+        VALUES
       )
     end
 

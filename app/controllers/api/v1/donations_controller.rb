@@ -22,4 +22,9 @@ class Api::V1::DonationsController < ApiController
     }
     render json: @result
   end
+
+  def create
+    Donation.create_in_batch(params["donations"])
+    head :created
+  end
 end
