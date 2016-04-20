@@ -13,6 +13,11 @@ class CartoDb
       parse(results)
     end
 
+    def find filters
+      results = send_query(filtered_query(filters))
+      parse(results)
+    end
+
     private
 
     def list_query
@@ -21,6 +26,10 @@ class CartoDb
       WHERE #{columns.map{|c| "#{c} IS NOT NULL"}.join(" AND ")}
       ORDER BY #{order_column}
       )
+    end
+
+    def filtered_query filters
+      raise "Neets to be implemented"
     end
 
     def parse data

@@ -1,21 +1,13 @@
 class Api::V1::ProjectsController < ApiController
   def index
-    @result = {
-      "location": {
-        "iso": "PRT",
-        "name": "Portugal"
-      },
-      "number_of_projects": 3,
-      "sectors": [
-        {
-          "slug": "water",
-          "name": "Water and Sanitation"
-        }
-      ],
-      "people_reached": 5056,
-      "women_and_girls_total": 3792,
-      "men_total": 1264
-    }
+    @result = ProjectsSummary.new(projects_params).fetch
     render json: @result
+  end
+
+  private
+
+  def projects_params
+    params.permit(:lat, :lng, :start_date, :end_date, :layer_id,
+                  sectors_slug: [])
   end
 end
