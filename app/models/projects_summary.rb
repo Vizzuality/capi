@@ -26,6 +26,30 @@ class ProjectsSummary < CartoDb
     }
   end
 
+  def summary_query
+    %Q(
+      SELECT projects.country, projects.iso,
+      #{project_cols.join(", ")},
+      #{people_cols.join(", ")},
+      SUM(w_g_reached) AS w_g_reached
+      FROM #{ProjectsSummary.table_name} AS projects
+      INNER JOIN #{Country.table_name} AS countries ON
+      countries.iso = projects.iso
+      WHERE ST_CONTAINS(countries.the_geom, ST_SetSRID(ST_MakePoint(
+      #{@lng}, #{@lat}), 4326))
+      #{where_clause}
+      GROUP by projects.country, projects.iso
+    )
+  end
+
+  def where_clause
+    if @start_date && @end_date
+      "AND year BETWEEN #{Date.parse(@start_date).year} AND #{Date.parse(@end_date).year}"
+    else
+      ""
+    end
+  end
+
   def number_of_projects
     @all_sectors.inject(0) do |sum, sector|
       sum += if !@sectors_slug || @sectors_slug.include?(sector.slug)
@@ -58,31 +82,6 @@ class ProjectsSummary < CartoDb
     end
     sectors
   end
-
-  def summary_query
-    %Q(
-      SELECT projects.country, projects.iso,
-      #{project_cols.join(", ")},
-      #{people_cols.join(", ")},
-      SUM(w_g_reached) AS w_g_reached
-      FROM #{ProjectsSummary.table_name} AS projects
-      INNER JOIN #{Country.table_name} AS countries ON
-      countries.iso = projects.iso
-      WHERE ST_CONTAINS(countries.the_geom, ST_SetSRID(ST_MakePoint(
-      #{@lng}, #{@lat}), 4326))
-      #{where_clause}
-      GROUP by projects.country, projects.iso
-    )
-  end
-
-  def where_clause
-    if @start_date && @end_date
-      "AND year BETWEEN #{Date.parse(@start_date).year} AND #{Date.parse(@end_date).year}"
-    else
-      ""
-    end
-  end
-
 
   private
 
