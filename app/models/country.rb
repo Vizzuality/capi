@@ -1,18 +1,16 @@
 class Country < CartoDb
 
-  attr_reader :iso, :name
+  COLUMNS = [:iso, :name]
+
+  attr_reader *COLUMNS
 
   def initialize(hsh)
-    @iso = hsh["iso"]
-    @name = hsh["name"]
+    COLUMNS.each do |col|
+      instance_variable_set("@#{col.to_s}", hsh[col.to_s])
+    end
   end
-
 
   private
-
-  def self.columns
-    ["iso", "name"]
-  end
 
   def self.table_name
     "borders"

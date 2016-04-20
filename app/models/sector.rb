@@ -1,15 +1,11 @@
 class Sector < CartoDb
+  COLUMNS = [:slug, :name]
 
-  attr_reader :slug, :name
+  attr_reader *COLUMNS
 
   def initialize(hsh)
-    @slug = hsh["slug"]
-    @name = hsh["name"]
-  end
-
-  private
-
-  def self.columns
-    ["slug", "name"]
+    COLUMNS.each do |col|
+      instance_variable_set("@#{col.to_s}", hsh[col.to_s])
+    end
   end
 end

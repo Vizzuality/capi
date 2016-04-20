@@ -13,11 +13,6 @@ class CartoDb
       parse(results)
     end
 
-    def find filters
-      results = send_query(filtered_query(filters))
-      parse(results)
-    end
-
     private
 
     def list_query
@@ -44,7 +39,7 @@ class CartoDb
     end
 
     def columns
-      raise "Needs to be implemented"
+      self::COLUMNS.map(&:to_s)
     end
 
     def order_column
