@@ -15,6 +15,6 @@ class Country < CartoDb
   end
 
   def self.table_name
-    "borders_care"
+    "borders"
   end
 end
