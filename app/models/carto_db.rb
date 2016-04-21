@@ -22,7 +22,6 @@ class CartoDb
     def list_query
       %Q(
       SELECT #{columns.join(", ")} FROM #{table_name}
-      WHERE #{columns.map{|c| "#{c} IS NOT NULL"}.join(" AND ")}
       ORDER BY #{order_column}
       )
     end
