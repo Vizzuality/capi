@@ -4,9 +4,12 @@ class ProjectsSummary < CartoDb
   attr_reader *COLUMNS
 
   def initialize(hsh)
-    COLUMNS.each do |col|
-      instance_variable_set("@#{col.to_s}", hsh[col.to_s])
-    end
+    @lat = hsh[:lat]
+    @lng = hsh[:lng]
+    @start_date = hsh[:start_date]
+    @end_date = hsh[:end_date]
+    @sectors_slug = hsh[:sectors_slug] && hsh[:sectors_slug].map {|t| "'#{t}'"}.
+      join(",")
   end
 
   def fetch

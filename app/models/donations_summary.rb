@@ -1,13 +1,18 @@
 class DonationsSummary < CartoDb
   COLUMNS = [:lat, :lng, :start_date, :end_date, :sectors_slug,
-             :countries_slug]
+             :countries_iso]
 
   attr_reader *COLUMNS
 
   def initialize(hsh)
-    COLUMNS.each do |col|
-      instance_variable_set("@#{col.to_s}", hsh[col.to_s])
-    end
+    @lat = hsh[:lat]
+    @lng = hsh[:lng]
+    @start_date = hsh[:start_date]
+    @end_date = hsh[:end_date]
+    @sectors_slug = hsh[:sectors_slug] && hsh[:sectors_slug].map {|t| "'#{t}'"}.
+      join(",")
+    @countries_iso = hsh[:countries_iso] && hsh[:countries_iso].map {|t| "'#{t}'"}.
+      join(",")
   end
 
   def fetch
@@ -56,11 +61,15 @@ class DonationsSummary < CartoDb
   end
 
   def where_clause
+    q = []
     if @start_date && @end_date
-      "AND date BETWEEN #{Date.parse(@start_date)} AND #{Date.parse(@end_date)}"
-    else
-      ""
+      q << "date BETWEEN #{Date.parse(@start_date)} AND #{Date.parse(@end_date)}"
     end
+    q << ["sectors IN (#{@sectors_slug})"] if @sectors_slug
+    if @countries_iso
+      q << ["string_to_array(countries, '|') %26%26 string_to_array(#{@countries_iso}, ',')"]
+    end
+    return q.empty? ? "" : "AND " + q.join(" AND ")
   end
 
   def sectors_of_interest
@@ -78,8 +87,8 @@ class DonationsSummary < CartoDb
   def countries_of_interest
     countries = []
     return [] unless @results["countries_agg"]
-    @results["countries_agg"].compact.group_by{|x| x}.
-      sort_by{|k, v| -v.size}.map(&:first)[0,3].each do |iso|
+    @results["countries_agg"].compact.map{|t| t.split(",")}.flatten
+      .group_by{|x| x}.sort_by{|k, v| -v.size}.map(&:first)[0,3].each do |iso|
       countries << {
         iso: iso,
         name: @all_countries.select{|s| s.iso == iso}.first.try(:name)
