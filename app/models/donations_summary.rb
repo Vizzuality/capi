@@ -37,7 +37,7 @@ class DonationsSummary < CartoDb
       SUM(amount) AS total_funds,
       COUNT(*) AS total_donors,
       array_agg(
-        CASE WHEN historical_donation = 't'
+        CASE WHEN historical_donation = 'f'
         THEN nickname || ' - $' || amount
           ELSE NULL END
       ) AS donations,
