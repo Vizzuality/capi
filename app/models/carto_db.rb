@@ -31,6 +31,7 @@ class CartoDb
       values = []
       records.each do |r|
         row = []
+        row << the_geom_val(r)
         columns.each do |col|
           row << formatted_value(col.to_sym, r[col])
         end
@@ -41,7 +42,7 @@ class CartoDb
 
     def insert_header
       %Q(
-        INSERT INTO #{table_name} (#{columns.join(", ")})
+        INSERT INTO #{table_name} (the_geom, #{columns.join(", ")})
         VALUES
       )
     end
@@ -67,6 +68,10 @@ class CartoDb
 
     def order_column
       "name"
+    end
+
+    def the_geom_val records=nil
+      nil
     end
   end
 end

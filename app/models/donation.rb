@@ -4,8 +4,9 @@ class Donation < CartoDb
                  :gift_id, :nickname, :sectors, :state, :sustainer]
   NUMBER_COLS = [:amount]
   DATE_COLS = [:date]
+  BOOLEAN_COLS = [:historical_donation]
 
-  COLUMNS = NUMBER_COLS + STRING_COLS + DATE_COLS
+  COLUMNS = NUMBER_COLS + STRING_COLS + DATE_COLS + BOOLEAN_COLS
 
   attr_reader *COLUMNS
 
@@ -24,8 +25,25 @@ class Donation < CartoDb
       value
     elsif DATE_COLS.include?(col)
       "'#{Date.parse(value)}'"
+    elsif BOOLEAN_COLS.include?(col)
+      false
     else
       nil
+    end
+  end
+
+  def self.the_geom_val(record)
+    if record["state"].present?
+      %Q(
+        cdb_geocode_namedplace_point('#{record["city"]}',
+                                     '#{record["state"]}',
+                                     '#{record["country"]}')
+      )
+    else
+      %Q(
+        cdb_geocode_namedplace_point('#{record["city"]}',
+                                     '#{record["country"]}')
+      )
     end
   end
 
