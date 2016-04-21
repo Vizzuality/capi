@@ -10,8 +10,8 @@
 - [ ] GET /api/v1/layers?category
 - [x] GET /api/v1/statistics?start_date=start_date&end_date=end_date&sectors_slug=sectors_slug&countries_iso=countries_iso
 - [x] GET /api/v1/projects?lat=lat&lng=lng&layer_id=layer_id&start_date=start_date&end_date=end_date&sectors_slug=sectors_slug
-- [ ] POST /api/v1/donations
-- [ ] GET /api/v1/donations?lat=lat&lng=lng&layer_id=layer_id&start_date=start_date&end_date=end_date&sectors_slug=sectors_slug&countries_iso=countries_iso
+- [x] POST /api/v1/donations
+- [x] GET /api/v1/donations?lat=lat&lng=lng&layer_id=layer_id&start_date=start_date&end_date=end_date&sectors_slug=sectors_slug&countries_iso=countries_iso
 
 ## Dependencies
 
