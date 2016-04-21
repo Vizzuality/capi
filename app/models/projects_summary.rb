@@ -52,31 +52,26 @@ class ProjectsSummary < CartoDb
 
   def number_of_projects
     @all_sectors.inject(0) do |sum, sector|
-      sum += if !@sectors_slug || @sectors_slug.include?(sector.slug)
-               @results["#{sector.slug}_projects"]
-             else
-               0
-             end
+      sum += @results["#{sector.slug}_projects"]
     end
   end
 
   def people_reached
     @all_sectors.inject(0) do |sum, sector|
-      sum += if !@sectors_slug || @sectors_slug.include?(sector.slug)
-               @results["#{sector.slug}_people"]
-             else
-               0
-             end
+      sum += @results["#{sector.slug}_people"]
     end
   end
 
   def sectors_from
     sectors = []
     @all_sectors.each do |sector|
-      if !@sectors_slug || @sectors_slug.include?(sector.slug)
+      if @results["#{sector.slug}_projects"].present? &&
+          @results["#{sector.slug}_projects"] > 0
         sectors << {
           slug: sector.slug,
-          name: sector.name
+          name: sector.name,
+          number_projects: @results["#{sector.slug}_projects"],
+          number_people: @results["#{sector.slug}_people"],
         }
       end
     end
