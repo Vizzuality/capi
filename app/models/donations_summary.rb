@@ -29,9 +29,9 @@ class DonationsSummary < CartoDb
       },
       "total_funds": @results["total_funds"],
       "total_donors": @results["total_donors"],
-      "donors": @results["donations"],
-      "sectors": sectors_of_interest,
-      "countries": countries_of_interest
+      "donors": @results["donations"].compact,
+      "sectors": @results["sectors_agg"] ? sectors_of_interest : [],
+      "countries": @results["countries_agg"] ? countries_of_interest : []
     }
   end
 
