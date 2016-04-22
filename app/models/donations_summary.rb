@@ -49,7 +49,9 @@ class DonationsSummary < CartoDb
       array_agg(replace(countries, '|', ',')) FILTER (
         WHERE countries <> '' OR countries IS NOT NULL
       ) AS countries_agg,
-      array_agg(sectors) AS sectors_agg
+      array_agg(sectors) FILTER (
+        WHERE sectors <> '' OR sectors IS NOT NULL
+      ) AS sectors_agg
       FROM #{DonationsSummary.table_name} AS donors
       WHERE
         ST_CONTAINS(
@@ -76,8 +78,8 @@ class DonationsSummary < CartoDb
 
   def sectors_of_interest
     sectors = []
-    @results["sectors_agg"].compact.group_by{|x| x}.
-      sort_by{|k, v| -v.size}.map(&:first)[0,3].each do |slug|
+    @results["sectors_agg"].compact.map{|t| t.split(",")}.flatten.
+      group_by{|x| x}.sort_by{|k, v| -v.size}.map(&:first)[0,3].each do |slug|
       sectors << {
         slug: slug,
         name: @all_sectors.select{|s| s.slug == slug}.first.try(:name)
