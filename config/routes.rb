@@ -6,6 +6,7 @@ Rails.application.routes.draw do
       get 'statistics', to: 'statistics#index'
       get 'layers', to: 'layers#index'
       get 'donations', to: 'donations#index'
+      get 'donations/distribution', to: 'donations#distribution'
       post 'donations', to: 'donations#create'
       get 'projects', to: 'projects#index'
     end

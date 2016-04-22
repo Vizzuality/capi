@@ -9,6 +9,11 @@ class Api::V1::DonationsController < ApiController
     head :created
   end
 
+  def distribution
+    @result = DonationsDistribution.new(filtering_params).fetch
+    render json: @result
+  end
+
   private
 
   def filtering_params

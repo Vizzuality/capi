@@ -23,7 +23,7 @@ class DonationsSummary < CartoDb
     {
       "location": {
         "iso": @results["country_iso"],
-        "name": @results["country"],
+        "country": @results["country"],
         "city": @results["city"],
         "state": @results["state"]
       },
