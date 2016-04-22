@@ -55,7 +55,7 @@ class DonationsSummary < CartoDb
       FROM #{DonationsSummary.table_name} AS donors
       WHERE
         ST_CONTAINS(
-          ST_Buffer(ST_SetSRID(ST_MakePoint(#{@lng}, #{@lat}), 4326), 0.1),
+          ST_Buffer(ST_SetSRID(ST_MakePoint(#{@lng}, #{@lat}), 4326), 0.01),
           donors.the_geom)
       #{where_clause}
       GROUP by city, country, state, country_iso
