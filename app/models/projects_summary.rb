@@ -21,11 +21,17 @@ class ProjectsSummary < CartoDb
         "iso": @results["iso"],
         "name": @results["country"]
       },
-      "number_of_projects": number_of_projects,
-      "sectors": sectors_from,
-      "people_reached": people_reached,
-      "women_and_girls_total": @results["w_g_reached"],
-      "men_total": people_reached - @results["w_g_reached"]
+      "totals": {
+        "projects": total_projects,
+        "people": total_people,
+        "women_and_girls": @results["w_g_reached"],
+        "men": total_people - @results["w_g_reached"]
+      },
+      "filtered": {
+        "projects": filtered_projects,
+        "people": filtered_people,
+      },
+      "sectors": sectors_from
     }
   end
 
@@ -53,15 +59,36 @@ class ProjectsSummary < CartoDb
     end
   end
 
-  def number_of_projects
+  def total_projects
     @all_sectors.inject(0) do |sum, sector|
       sum += @results["#{sector.slug}_projects"]
     end
   end
 
-  def people_reached
+  def filtered_projects
+    @all_sectors.inject(0) do |sum, sector|
+      sum += if !@sectors_slug || @sectors_slug.include?(sector.slug)
+               @results["#{sector.slug}_projects"]
+             else
+               0
+             end
+    end
+  end
+
+  def total_people
     @all_sectors.inject(0) do |sum, sector|
       sum += @results["#{sector.slug}_people"]
+    end
+  end
+
+  def filtered_people
+    @all_sectors.inject(0) do |sum, sector|
+      sum += if !@sectors_slug || @sectors_slug.include?(sector.slug)
+               @results["#{sector.slug}_people"]
+             else
+               0
+             end
+
     end
   end
 
