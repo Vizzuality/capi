@@ -33,7 +33,9 @@ class Donation < CartoDb
   end
 
   def self.the_geom_val(record)
-    if record["state"].present?
+    if record["lat"].present? && record["lng"].present?
+      "ST_SetSRID(ST_MakePoint(#{record["lng"]}, #{record["lat"]}), 4326)"
+    elsif record["state"].present?
       %Q(
         cdb_geocode_namedplace_point('#{record["city"]}',
                                      '#{record["state"]}',
