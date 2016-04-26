@@ -60,6 +60,7 @@ class DonationsSummary < CartoDb
           donors.the_geom)
       #{where_clause}
       GROUP by city, country, state, country_iso
+      ORDER by total_donors DESC, total_funds DESC
     )
   end
 
