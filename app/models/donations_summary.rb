@@ -70,10 +70,10 @@ class DonationsSummary < CartoDb
       q << "date BETWEEN #{Date.parse(@start_date)} AND #{Date.parse(@end_date)}"
     end
     if @sectors_slug
-      q << ["string_to_array(sectors, ',') %26%26 string_to_array(#{@sectors_slug}, ',')"]
+      q << ["string_to_array(sectors, ',') %26%26 ARRAY[#{@sectors_slug}]"]
     end
     if @countries_iso
-      q << ["string_to_array(countries, '|') %26%26 string_to_array(#{@countries_iso}, ',')"]
+      q << ["string_to_array(countries, '|') %26%26 ARRAY[#{@countries_iso}]"]
     end
     return q.empty? ? "" : "AND " + q.join(" AND ")
   end
