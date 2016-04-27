@@ -1,12 +1,13 @@
 class DonationsSummary < CartoDb
   COLUMNS = [:lat, :lng, :start_date, :end_date, :sectors_slug,
-             :countries_iso]
+             :countries_iso, :zoom]
 
   attr_reader *COLUMNS
 
   def initialize(hsh)
     @lat = hsh[:lat]
     @lng = hsh[:lng]
+    @zoom = hsh[:zoom].to_i
     @start_date = hsh[:start_date]
     @end_date = hsh[:end_date]
     @sectors_slug = hsh[:sectors_slug] && hsh[:sectors_slug].map {|t| "'#{t}'"}.
@@ -56,7 +57,8 @@ class DonationsSummary < CartoDb
       FROM #{DonationsSummary.table_name} AS donors
       WHERE
         ST_CONTAINS(
-          ST_Buffer(ST_SetSRID(ST_MakePoint(#{@lng}, #{@lat}), 4326), 0.01),
+          ST_Buffer(ST_SetSRID(ST_MakePoint(#{@lng}, #{@lat}), 4326),
+          #{get_radius_buffer}),
           donors.the_geom)
       #{where_clause}
       GROUP by city, country, state, country_iso
@@ -111,6 +113,26 @@ class DonationsSummary < CartoDb
 
   def people_cols
     @all_sectors.map{|s| "SUM(#{s.slug}_people) AS #{s.slug}_people"}
+  end
+
+  def get_radius_buffer
+    if [10,9].include?(@zoom)
+      0.01
+    elsif [7,8].include?(@zoom)
+      0.03
+    elsif @zoom == 6
+      0.06
+    elsif @zoom == 5
+      0.13
+    elsif @zoom == 4
+      0.25
+    elsif @zoom == 3
+      0.6
+    elsif @zoom == 2
+      1
+    elsif @zoom == 1
+      1.2
+    end
   end
 
   def self.table_name
