@@ -16,6 +16,13 @@ class ProjectsSummary < CartoDb
     puts summary_query
     @results = ProjectsSummary.send_query(summary_query)["rows"].try(:first)
     return [] unless @results
+
+    if @results["w_g_reached"].present? && @results["w_g_reached"] > 0 &&
+        @results["total_peo"].present? && @results["total_peo"] > 0
+      women_percent = @results["total_peo"]/@results["w_g_reached"]
+    else
+      women_percent = nil
+    end
     {
       "location": {
         "iso": @results["iso"],
@@ -24,10 +31,10 @@ class ProjectsSummary < CartoDb
       "totals": {
         "projects": @results["total_projects"],
         "people": @results["total_peo"],
-        "women_and_girls": @results["w_g_reached"],
-        "men": @results["w_g_reached"] ? @results["total_peo"] - @results["w_g_reached"] : nil
+        "women_and_girls": women_percent
       },
       "sectors": sectors_from,
+      "url": "http://www.care.org/country/#{@results["country"].downcase.dasherize}",
       "year": @start_date.try(:year) || (Date.today.year-1)
     }
   end
@@ -58,8 +65,7 @@ class ProjectsSummary < CartoDb
   def sectors_from
     sectors = []
     @all_sectors.each do |sector|
-      if @results["#{sector.slug}_projects"].present? &&
-          @results["#{sector.slug}_projects"] > 0
+      if @results["#{sector.slug}_projects"].present?
         sectors << {
           slug: sector.slug,
           name: sector.name,
