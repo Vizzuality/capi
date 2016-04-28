@@ -1,7 +1,7 @@
 class Layer < CartoDb
   COLUMNS = [:slug, :name, :category, :geo_query, :geo_cartocss,
              :layer_type, :legend_type, :number_of_buckets, :sql_template,
-             :active, :legend, :table_name]
+             :active, :legend, :table_name, :layer_type]
 
   attr_reader *COLUMNS
 
