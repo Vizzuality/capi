@@ -1,12 +1,13 @@
 class Donation < CartoDb
 
-  STRING_COLS = [:city, :confirmati, :countries, :country, :country_iso,
-                 :gift_id, :nickname, :sectors, :state, :sustainer]
+  STRING_COLS = [:city, :confirmation, :country, :country_iso,
+                 :gift_id, :nickname, :state, :sustainer]
+  ARRAY_COLS = [:countries, :sectors]
   NUMBER_COLS = [:amount]
   DATE_COLS = [:date]
   BOOLEAN_COLS = [:historical_donation]
 
-  COLUMNS = NUMBER_COLS + STRING_COLS + DATE_COLS + BOOLEAN_COLS
+  COLUMNS = NUMBER_COLS + STRING_COLS + DATE_COLS + BOOLEAN_COLS + ARRAY_COLS
 
   attr_reader *COLUMNS
 
@@ -25,6 +26,8 @@ class Donation < CartoDb
       value
     elsif DATE_COLS.include?(col)
       "'#{Date.parse(value)}'"
+    elsif ARRAY_COLS.include?(col)
+      "ARRAY[#{value.split("|").map{|t| "'#{t}'"}.join(",")}]"
     elsif BOOLEAN_COLS.include?(col)
       false
     else
