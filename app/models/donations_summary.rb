@@ -2,12 +2,14 @@ class DonationsSummary < CartoDb
   COLUMNS = [:lat, :lng, :start_date, :end_date, :sectors_slug,
              :countries_iso, :zoom]
 
+  DONORS_SEPARATOR = "###"
+
   attr_reader *COLUMNS
 
   def initialize(hsh)
     @lat = hsh[:lat]
     @lng = hsh[:lng]
-    @zoom = hsh[:zoom].to_i
+    @zoom = hsh[:zoom] ? hsh[:zoom].to_i : 9
     @start_date = hsh[:start_date]
     @end_date = hsh[:end_date]
     @sectors_slug = hsh[:sectors_slug] && hsh[:sectors_slug].map {|t| "'#{t}'"}.
@@ -31,7 +33,12 @@ class DonationsSummary < CartoDb
       },
       "total_funds": @results["total_funds"],
       "total_donors": @results["total_donors"],
-      "donors": @results["donations"].compact,
+      "donors": @results["donations"].compact.map { |d|
+        {
+          name: d.split(DONORS_SEPARATOR)[0],
+          amount: d.split(DONORS_SEPARATOR)[1]
+        }
+      },
       "sectors": @results["sectors_agg"] ? sectors_of_interest : [],
       "countries": @results["countries_agg"] ? countries_of_interest : []
     }
@@ -45,7 +52,7 @@ class DonationsSummary < CartoDb
       COUNT(*) AS total_donors,
       array_agg(
         CASE WHEN historical_donation = 't'
-        THEN nickname || ' - $' || amount
+        THEN nickname || '#{DONORS_SEPARATOR}' || amount
           ELSE NULL END
       ) AS donations,
       array_agg(replace(countries, '|', ',')) FILTER (
