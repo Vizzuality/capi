@@ -1,5 +1,5 @@
 class Sector < CartoDb
-  COLUMNS = [:slug, :name]
+  COLUMNS = [:slug, :name, :filter_for_projects]
 
   attr_reader *COLUMNS
 

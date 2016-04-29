@@ -12,7 +12,7 @@ class ProjectsSummary < CartoDb
   end
 
   def fetch
-    @all_sectors = Sector.all
+    @all_sectors = Sector.all.select{|s| s.filter_for_projects }
     puts summary_query
     @results = ProjectsSummary.send_query(summary_query)["rows"].try(:first)
     return [] unless @results
