@@ -15,8 +15,19 @@ class Layer < CartoDb
   def set_limit_dates
     result = Layer.send_query(limit_dates_query)["rows"].try(:first)
     return unless result
-    @start_date = result["start_date"]
-    @end_date = result["end_date"]
+    begin
+      @start_date, @end_date = [
+        Date.parse(result["start_date"]),
+        Date.parse(result["end_date"])
+      ]
+    rescue
+      if result["start_date"].is_a?(Fixnum) && result["end_date"].is_a?(Fixnum)
+        @start_date, @end_date = [
+          Date.parse("1/1/#{result["start_date"]}"),
+          Date.parse("31/12/#{result["end_date"]}"),
+        ]
+      end
+    end
   end
 
   def limit_dates_query
