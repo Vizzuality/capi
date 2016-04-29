@@ -1,12 +1,12 @@
 class ProjectsSummary < CartoDb
-  COLUMNS = [:lat, :lng, :start_date, :sectors_slug]
+  COLUMNS = [:lat, :lng, :end_date, :sectors_slug]
 
   attr_reader *COLUMNS
 
   def initialize(hsh)
     @lat = hsh[:lat]
     @lng = hsh[:lng]
-    @start_date = hsh[:start_date]
+    @end_date = hsh[:end_date]
     @sectors_slug = hsh[:sectors_slug] && hsh[:sectors_slug].map {|t| "'#{t}'"}.
       join(",")
   end
@@ -35,7 +35,7 @@ class ProjectsSummary < CartoDb
       },
       "sectors": sectors_from,
       "url": "http://www.care.org/country/#{@results["country"].downcase.dasherize}",
-      "year": @start_date.try(:year) || (Date.today.year-1)
+      "year": @end_date.try(:year) || (Date.today.year-1)
     }
   end
 
@@ -55,8 +55,8 @@ class ProjectsSummary < CartoDb
   end
 
   def where_clause
-    if @start_date
-      "AND year = #{Date.parse(@start_date).year}"
+    if @end_date
+      "AND year = #{Date.parse(@end_date).year}"
     else
       "AND year = #{Date.today.year-1}"
     end

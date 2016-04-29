@@ -8,6 +8,6 @@ class Api::V1::ProjectsController < ApiController
 
   def projects_params
     params.permit(:lat, :lng, :start_date, :end_date, :layer_id,
-                  sectors_slug: [])
+                  :zoom, sectors_slug: [])
   end
 end
