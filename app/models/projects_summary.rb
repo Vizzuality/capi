@@ -19,7 +19,7 @@ class ProjectsSummary < CartoDb
 
     if @results["w_g_reached"].present? && @results["w_g_reached"] > 0 &&
         @results["total_peo"].present? && @results["total_peo"] > 0
-      women_percent = @results["total_peo"]/@results["w_g_reached"]
+      women_percent = (@results["w_g_reached"].to_f * 100.0 )/ @results["total_peo"].to_f
     else
       women_percent = nil
     end
