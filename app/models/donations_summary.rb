@@ -114,14 +114,6 @@ class DonationsSummary < CartoDb
 
   private
 
-  def project_cols
-    @all_sectors.map{|s| "SUM(#{s.slug}_projects) AS #{s.slug}_projects"}
-  end
-
-  def people_cols
-    @all_sectors.map{|s| "SUM(#{s.slug}_people) AS #{s.slug}_people"}
-  end
-
   def get_radius_buffer
     if [10,9].include?(@zoom)
       0.01
