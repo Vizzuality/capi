@@ -16,8 +16,6 @@ class DonationsDistribution < CartoDb
   end
 
   def fetch
-    @all_sectors = Sector.all
-    @all_countries = Country.all
     puts distribution_query
     @results = DonationsDistribution.send_query(distribution_query)["rows"].
       try(:first)
