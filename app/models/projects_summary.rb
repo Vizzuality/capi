@@ -6,7 +6,7 @@ class ProjectsSummary < CartoDb
   def initialize(hsh)
     @lat = hsh[:lat]
     @lng = hsh[:lng]
-    @end_date = hsh[:end_date]
+    @end_date = hsh[:end_date] ? Date.parse(hsh[:end_date]) : nil
     @sectors_slug = hsh[:sectors_slug] && hsh[:sectors_slug].map {|t| "'#{t}'"}.
       join(",")
   end
@@ -56,7 +56,7 @@ class ProjectsSummary < CartoDb
 
   def where_clause
     if @end_date
-      "AND year = #{Date.parse(@end_date).year}"
+      "AND year = #{@end_date.year}"
     else
       "AND year = #{Date.today.year-1}"
     end
