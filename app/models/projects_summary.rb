@@ -65,7 +65,8 @@ class ProjectsSummary < CartoDb
   def sectors_from
     sectors = []
     @all_sectors.each do |sector|
-      if @results["#{sector.slug}_projects"].present?
+      if @results["#{sector.slug}_projects"].present? &&
+          @results["#{sector.slug}_projects"] > 0
         sectors << {
           slug: sector.slug,
           name: sector.name,
@@ -74,7 +75,7 @@ class ProjectsSummary < CartoDb
         }
       end
     end
-    sectors
+    sectors.sort{|a,b| b[:number_people] <=> a[:number_people]}
   end
 
   private
