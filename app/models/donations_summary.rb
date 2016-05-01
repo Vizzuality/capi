@@ -60,11 +60,11 @@ class DonationsSummary < CartoDb
         '#{DONORS_SEPARATOR}' || date
           ELSE NULL END
       ) AS donations,
-      array_agg(replace(countries, '|', ',')) FILTER (
-        WHERE countries <> '' OR countries IS NOT NULL
+      array_agg(countries) FILTER (
+        WHERE countries <> '{}' OR countries IS NOT NULL
       ) AS countries_agg,
       array_agg(sectors) FILTER (
-        WHERE sectors <> '' OR sectors IS NOT NULL
+        WHERE sectors <> '{}' OR sectors IS NOT NULL
       ) AS sectors_agg
       FROM #{DonationsSummary.table_name} AS donors
       WHERE
@@ -120,7 +120,7 @@ class DonationsSummary < CartoDb
   private
 
   def get_radius_buffer
-    if [10,9].include?(@zoom)
+    if @zoom >= 9
       0.01
     elsif [7,8].include?(@zoom)
       0.03
