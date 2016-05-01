@@ -7,8 +7,7 @@ class ProjectsSummary < CartoDb
     @lat = hsh[:lat]
     @lng = hsh[:lng]
     @end_date = hsh[:end_date] ? Date.parse(hsh[:end_date]) : nil
-    @sectors_slug = hsh[:sectors_slug] && hsh[:sectors_slug].map {|t| "'#{t}'"}.
-      join(",")
+    @sectors_slug = hsh[:sectors_slug]
   end
 
   def fetch
@@ -55,11 +54,20 @@ class ProjectsSummary < CartoDb
   end
 
   def where_clause
-    if @end_date
-      "AND year = #{@end_date.year}"
-    else
-      "AND year = #{Date.today.year-1}"
+    q = []
+    q << if @end_date
+           "AND year = #{@end_date.year}"
+         else
+           "AND year = #{Date.today.year-1}"
+         end
+    if @sectors_slug
+      sectors = []
+      @sectors_slug.each do |s|
+        sectors << "#{s}_people <> 0"
+      end
+      q << "(#{sectors.join(" OR ")})"
     end
+    q.join(" AND ")
   end
 
   def sectors_from
