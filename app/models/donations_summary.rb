@@ -24,6 +24,9 @@ class DonationsSummary < CartoDb
     puts summary_query
     @results = DonationsSummary.send_query(summary_query)["rows"].try(:first)
     return [] unless @results
+    donors = @results["donations"].empty? ? [] : @results["donations"].
+      compact.map{|t| t.split(DONORS_SEPARATOR)}.
+      sort{|a,b| Date.parse(a[2]) <=> Date.parse(b[2])}
     {
       "location": {
         "iso": @results["country_iso"],
@@ -33,10 +36,11 @@ class DonationsSummary < CartoDb
       },
       "total_funds": @results["total_funds"],
       "total_donors": @results["total_donors"],
-      "donors": @results["donations"].compact.map { |d|
+      "donors": donors.map { |d|
         {
-          name: d.split(DONORS_SEPARATOR)[0],
-          amount: d.split(DONORS_SEPARATOR)[1]
+          name: d[0],
+          amount: d[1],
+          date: Date.parse(d[2])
         }
       },
       "sectors": @results["sectors_agg"] ? sectors_of_interest : [],
@@ -52,7 +56,8 @@ class DonationsSummary < CartoDb
       COUNT(*) AS total_donors,
       array_agg(
         CASE WHEN historical_donation = 't'
-        THEN nickname || '#{DONORS_SEPARATOR}' || amount
+        THEN nickname || '#{DONORS_SEPARATOR}' || amount ||
+        '#{DONORS_SEPARATOR}' || date
           ELSE NULL END
       ) AS donations,
       array_agg(replace(countries, '|', ',')) FILTER (
