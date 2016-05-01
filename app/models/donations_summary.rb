@@ -136,6 +136,8 @@ class DonationsSummary < CartoDb
       1
     elsif @zoom == 1
       1.2
+    else
+      1.4
     end
   end
 
