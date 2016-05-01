@@ -60,10 +60,10 @@ class DonationsSummary < CartoDb
         '#{DONORS_SEPARATOR}' || date
           ELSE NULL END
       ) AS donations,
-      array_agg(countries) FILTER (
+      array_agg(array_to_string(countries, ',')) FILTER (
         WHERE countries <> '{}' OR countries IS NOT NULL
       ) AS countries_agg,
-      array_agg(sectors) FILTER (
+      array_agg(array_to_string(sectors, ',')) FILTER (
         WHERE sectors <> '{}' OR sectors IS NOT NULL
       ) AS sectors_agg
       FROM #{DonationsSummary.table_name} AS donors
