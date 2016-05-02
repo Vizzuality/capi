@@ -20,7 +20,7 @@ class DonationsSummary < CartoDb
 
   def fetch
     @all_sectors = Sector.cached_all
-    @all_countries = Country.all
+    @all_countries = Country.cached_all
     puts summary_query
     @results = DonationsSummary.send_query(summary_query)["rows"].try(:first)
     return [] unless @results
