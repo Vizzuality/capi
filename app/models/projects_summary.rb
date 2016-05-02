@@ -13,8 +13,8 @@ class ProjectsSummary < CartoDb
   def fetch
     @all_sectors = Sector.all.select{|s| s.filter_for_projects }
     return [] unless fetch_country
-    puts summary_query
     @results = ProjectsSummary.cached_summary
+    puts summary_query
     refugees = ProjectsSummary.cached_refugees
     return [] unless @results.present? || refugees.present?
 
@@ -48,7 +48,12 @@ class ProjectsSummary < CartoDb
   end
 
   def self.summary_cache_key
-    "summary-#{@country["iso"]}-#{@end_date}-#{@sectors_slug && @sectors_slug.join("_")}"
+    [
+      "summary",
+      "#{@country["iso"]}",
+      "#{@end_date}",
+      "#{@sectors_slug ? @sectors_slug.join("-") : ""}"
+    ].join("-")
   end
 
   def summary_query
