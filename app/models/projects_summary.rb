@@ -14,8 +14,8 @@ class ProjectsSummary < CartoDb
     @all_sectors = Sector.all.select{|s| s.filter_for_projects }
     return [] unless fetch_country
     puts summary_query
-    @results = ProjectsSummary.send_query(summary_query)["rows"].try(:first) || {}
-    refugees = ProjectsSummary.send_query(refugees_query)["rows"]
+    @results = ProjectSummary.cached_summary
+    refugees = ProjectSummary.cached_refugees
     return [] unless @results.present? || refugees.present?
 
     if @results["w_g_reached"] && @results["w_g_reached"] > 0 &&
@@ -41,6 +41,16 @@ class ProjectsSummary < CartoDb
     }
   end
 
+  def self.cached_summary
+    Rails.cache.fetch(summary_cache_key, expires_in: 20.days) do
+      ProjectsSummary.send_query(summary_query)["rows"].try(:first) || {}
+    end
+  end
+
+  def self.summary_cache_key
+    "summary-#{@country["iso"]}-#{@end_date}-#{@sectors_slug.join("_")}"
+  end
+
   def summary_query
     %Q(
       SELECT projects.country, projects.iso,
@@ -51,6 +61,16 @@ class ProjectsSummary < CartoDb
       WHERE projects.iso = '#{@country["iso"]}'
       #{where_clause}
     )
+  end
+
+  def self.cached_refugees
+    Rails.cache.fetch(refugees_cache_key, expires_in: 20.days) do
+      ProjectsSummary.send_query(refugees_query)["rows"]
+    end
+  end
+
+  def self.refugees_cache_key
+    "refugees-#{@country["iso"]}-#{@end_date}"
   end
 
   def refugees_query
