@@ -14,8 +14,8 @@ class ProjectsSummary < CartoDb
     @all_sectors = Sector.all.select{|s| s.filter_for_projects }
     return [] unless fetch_country
     puts summary_query
-    @results = ProjectSummary.cached_summary
-    refugees = ProjectSummary.cached_refugees
+    @results = ProjectsSummary.cached_summary
+    refugees = ProjectsSummary.cached_refugees
     return [] unless @results.present? || refugees.present?
 
     if @results["w_g_reached"] && @results["w_g_reached"] > 0 &&
