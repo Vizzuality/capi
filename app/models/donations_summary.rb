@@ -19,7 +19,7 @@ class DonationsSummary < CartoDb
   end
 
   def fetch
-    @all_sectors = Sector.all
+    @all_sectors = Sector.cached_all
     @all_countries = Country.all
     puts summary_query
     @results = DonationsSummary.send_query(summary_query)["rows"].try(:first)

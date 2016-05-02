@@ -11,7 +11,7 @@ class ProjectsSummary < CartoDb
   end
 
   def fetch
-    @all_sectors = Sector.all.select{|s| s.filter_for_projects }
+    @all_sectors = Sector.cached_all.select{|s| s.filter_for_projects }
     return [] unless fetch_country
     @results = cached_summary
     puts summary_query
@@ -83,8 +83,7 @@ class ProjectsSummary < CartoDb
      SELECT projects.crisis, projects.country, projects.crisis_iso,
      projects.iso, projects.year
      FROM refugees_projects AS projects
-     WHERE (projects.iso = '#{@country["iso"]}' OR
-     projects.crisis_iso = '#{@country["iso"]}')
+     WHERE projects.crisis_iso = '#{@country["iso"]}'
      AND year = #{@end_date}
     )
   end
