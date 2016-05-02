@@ -48,7 +48,7 @@ class ProjectsSummary < CartoDb
   end
 
   def self.summary_cache_key
-    "summary-#{@country["iso"]}-#{@end_date}-#{@sectors_slug.join("_")}"
+    "summary-#{@country["iso"]}-#{@end_date}-#{@sectors_slug && @sectors_slug.join("_")}"
   end
 
   def summary_query
