@@ -6,17 +6,19 @@ class ProjectsSummary < CartoDb
   def initialize(hsh)
     @lat = hsh[:lat]
     @lng = hsh[:lng]
-    @end_date = hsh[:end_date] ? Date.parse(hsh[:end_date]) : nil
+    @end_date = hsh[:end_date] ? Date.parse(hsh[:end_date]).year : (Date.today.year-1)
     @sectors_slug = hsh[:sectors_slug]
   end
 
   def fetch
     @all_sectors = Sector.all.select{|s| s.filter_for_projects }
+    return [] unless fetch_country
     puts summary_query
-    @results = ProjectsSummary.send_query(summary_query)["rows"].try(:first)
-    return [] unless @results
+    @results = ProjectsSummary.send_query(summary_query)["rows"].try(:first) || {}
+    refugees = ProjectsSummary.send_query(refugees_query)["rows"]
+    return [] unless @results.present? || refugees.present?
 
-    if @results["w_g_reached"].present? && @results["w_g_reached"] > 0 &&
+    if @results["w_g_reached"] && @results["w_g_reached"] > 0 &&
         @results["total_peo"].present? && @results["total_peo"] > 0
       women_percent = (@results["w_g_reached"].to_f * 100.0 )/ @results["total_peo"].to_f
     else
@@ -24,8 +26,8 @@ class ProjectsSummary < CartoDb
     end
     {
       "location": {
-        "iso": @results["iso"],
-        "name": @results["country"]
+        "iso": @country["iso"],
+        "name": @country["name"]
       },
       "totals": {
         "projects": @results["total_projects"],
@@ -33,8 +35,9 @@ class ProjectsSummary < CartoDb
         "women_and_girls": women_percent
       },
       "sectors": sectors_from,
-      "url": "http://www.care.org/country/#{@results["country"].downcase.dasherize}",
-      "year": @end_date.try(:year) || (Date.today.year-1)
+      "url": "http://www.care.org/country/#{@country["name"].downcase.dasherize}",
+      "year": @end_date,
+      "crisis": refugees.present? ? parse_crisis(refugees) : {}
     }
   end
 
@@ -45,21 +48,40 @@ class ProjectsSummary < CartoDb
       #{project_cols.join(", ")},
       #{people_cols.join(", ")}
       FROM #{ProjectsSummary.table_name} AS projects
-      INNER JOIN #{Country.table_name} AS countries ON
-      countries.iso = projects.iso
-      WHERE ST_CONTAINS(countries.the_geom, ST_SetSRID(ST_MakePoint(
-      #{@lng}, #{@lat}), 4326))
+      WHERE projects.iso = '#{@country["iso"]}'
       #{where_clause}
+    )
+  end
+
+  def refugees_query
+    %(
+     SELECT projects.crisis, projects.country, projects.crisis_iso,
+     projects.iso, projects.year
+     FROM refugees_projects AS projects
+     WHERE (projects.iso = '#{@country["iso"]}' OR
+     projects.crisis_iso = '#{@country["iso"]}')
+     AND year = #{@end_date}
+    )
+  end
+
+  def fetch_country
+    puts country_query
+    @country = ProjectsSummary.send_query(country_query)["rows"].try(:first)
+    @country
+  end
+
+  def country_query
+    %(
+    SELECT iso, name
+    FROM #{Country.table_name} AS countries
+    WHERE ST_CONTAINS(countries.the_geom, ST_SetSRID(ST_MakePoint(
+     #{@lng}, #{@lat}), 4326))
     )
   end
 
   def where_clause
     q = []
-    q << if @end_date
-           "AND year = #{@end_date.year}"
-         else
-           "AND year = #{Date.today.year-1}"
-         end
+    q << "AND year = #{@end_date}"
     if @sectors_slug
       sectors = []
       @sectors_slug.each do |s|
@@ -73,7 +95,7 @@ class ProjectsSummary < CartoDb
   def sectors_from
     sectors = []
     @all_sectors.each do |sector|
-      if @results["#{sector.slug}_projects"].present? &&
+      if @results["#{sector.slug}_projects"] &&
           @results["#{sector.slug}_projects"] > 0
         sectors << {
           slug: sector.slug,
@@ -84,6 +106,23 @@ class ProjectsSummary < CartoDb
       end
     end
     sectors.sort{|a,b| b[:number_people] <=> a[:number_people]}
+  end
+
+  def parse_crisis hsh
+    result = []
+    hsh.group_by{|t| t["crisis"]}.each do |name, details|
+      crisis = {}
+      crisis["name"] = name
+      crisis["parties_involved"] = []
+      details.each do |d|
+        crisis["parties_involved"] << {
+          country: d["country"],
+          iso: d["iso"]
+        }
+      end
+      result << crisis
+    end
+    result
   end
 
   private
