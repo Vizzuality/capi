@@ -27,7 +27,7 @@ class Donation < CartoDb
     elsif DATE_COLS.include?(col)
       "'#{Date.parse(value)}'"
     elsif ARRAY_COLS.include?(col)
-      "ARRAY[#{value.split("|").map{|t| "'#{t}'"}.join(",")}]"
+      "ARRAY[#{value.split(",").map{|t| "'#{t}'"}.join(",")}]"
     elsif BOOLEAN_COLS.include?(col)
       false
     else
