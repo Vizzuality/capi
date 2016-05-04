@@ -13,7 +13,7 @@ class DonationsStatistics < CartoDb
 
   def fetch
     results = DonationsStatistics.send_query(stats_query)["rows"].try(:first)
-    return [] unless results
+    return {} unless results
     {
       total_donations: results["total_donations"],
       total_funds: results["total_funds"]

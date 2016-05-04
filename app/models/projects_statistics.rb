@@ -9,7 +9,7 @@ class ProjectsStatistics < CartoDb
 
   def fetch
     results = cached_stats
-    return [] unless results
+    return {} unless results
     {
       total_people: results["total_people"],
       total_projects: results["total_projects"]
