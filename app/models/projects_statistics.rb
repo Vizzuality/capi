@@ -1,10 +1,9 @@
 class ProjectsStatistics < CartoDb
 
-  attr_reader :start_date, :end_date
+  attr_reader :end_date
 
   def initialize hsh
-    @start_date = hsh[:start_date]
-    @end_date = hsh[:end_date]
+    @end_date = Date.parse(hsh[:end_date]).year : Date.today.year
   end
 
   def fetch
@@ -25,7 +24,6 @@ class ProjectsStatistics < CartoDb
   def stats_cache_key
     [
       "projects-stats",
-      "#{@start_date}",
       "#{@end_date}"
     ].join("-")
   end
@@ -39,8 +37,8 @@ class ProjectsStatistics < CartoDb
   end
 
   def where_clause
-    if @start_date && @end_date
-      "WHERE date BETWEEN '#{Date.parse(@start_date)}' AND '#{Date.parse(@end_date)}'"
+    if @end_date
+      "WHERE date = '#{@end_date}'"
     end
   end
 
