@@ -1,4 +1,4 @@
-class Statistics < CartoDb
+class DonationsStatistics < CartoDb
 
   attr_reader :start_date, :end_date, :sectors_slug, :countries_iso
 
@@ -12,7 +12,7 @@ class Statistics < CartoDb
   end
 
   def fetch
-    results = Statistics.send_query(stats_query)["rows"].try(:first)
+    results = DonationsStatistics.send_query(stats_query)["rows"].try(:first)
     return [] unless results
     {
       total_donations: results["total_donations"],
@@ -23,7 +23,7 @@ class Statistics < CartoDb
   def stats_query
     %Q(
       SELECT COUNT(*) AS total_donations, SUM(amount) AS total_funds
-      FROM #{Statistics.table_name}
+      FROM #{DonationsStatistics.table_name}
       #{where_clause}
     )
   end

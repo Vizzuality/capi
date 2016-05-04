@@ -1,6 +1,7 @@
 class Api::V1::StatisticsController < ApiController
   def index
-    @result = Statistics.new(stats_params).fetch
+    @result = DonationsStatistics.new(stats_params).fetch
+    @result.merge!(ProjectsStatistics.new(stats_params).fetch)
     render json: @result
   end
 
