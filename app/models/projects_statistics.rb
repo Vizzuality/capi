@@ -38,7 +38,7 @@ class ProjectsStatistics < CartoDb
 
   def where_clause
     if @end_date
-      "WHERE date = '#{@end_date}'"
+      "WHERE year = '#{@end_date}'"
     end
   end
 
