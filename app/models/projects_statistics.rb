@@ -3,7 +3,7 @@ class ProjectsStatistics < CartoDb
   attr_reader :end_date
 
   def initialize hsh
-    @end_date = Date.parse(hsh[:end_date]).year : Date.today.year
+    @end_date = hsh[:end_date] ? Date.parse(hsh[:end_date]).year : Date.today.year
   end
 
   def fetch
