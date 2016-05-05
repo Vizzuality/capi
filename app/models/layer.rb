@@ -1,7 +1,8 @@
 class Layer < CartoDb
   COLUMNS = [:slug, :name, :category, :geo_query, :geo_cartocss,
              :layer_type, :legend_type, :number_of_buckets, :sql_template,
-             :active, :legend, :table_name, :layer_type, :date_col]
+             :active, :legend, :table_name, :date_col,
+             :timeline_int_count, :timeline_int_unit, :timeline_speed]
 
   attr_reader *COLUMNS
   attr_reader :start_date, :end_date

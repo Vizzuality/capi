@@ -1,3 +1,3 @@
 class SectorSerializer < ActiveModel::Serializer
-  attributes :slug, :name
+  attributes :slug, :name, :filter_for_projects
 end

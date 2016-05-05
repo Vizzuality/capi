@@ -1,7 +1,12 @@
 class CartoDb
   include ActiveModel::Serialization
 
+  alias :read_attribute_for_serialization :send
+
   class << self
+    def model_name
+      @_model_name ||= ActiveModel::Name.new(self)
+    end
 
     def send_query query
       api_call = Cartowrap::API.new
