@@ -47,20 +47,30 @@ class RefugeesSummary < CartoDb
   end
 
   def parse_crisis hsh
+    all_countries = Country.cached_all
     result = { crisis_local: [], crisis_aiding: []}
-    hsh.group_by{|t| t["crisis"]}.each do |name, details|
-      crisis = {}
-      crisis["name"] = name
-      crisis["parties_involved"] = []
-      details.each do |d|
-        crisis["parties_involved"] << {
-          country: d["country"],
-          iso: d["iso"]
-        }
-      end
-      if @country["iso"] == details.first["crisis_iso"]
-        result[:crisis_local] << crisis
+    hsh.group_by{|t| t["crisis_iso"]}.each do |crisis_iso, details|
+      if crisis_iso == @country["iso"]
+        details.group_by{ |t| t["crisis"] }.each do |name, info|
+          crisis = {}
+          crisis[:name] = name
+          crisis[:parties_involved] = []
+          info.each do |d|
+            crisis[:parties_involved] << {
+              country: d["country"],
+              iso: d["iso"]
+            }
+          end
+          result[:crisis_local] << crisis
+        end
       else
+        crisis = {}
+        details.each do |d|
+          crisis[:name] = d["crisis"]
+          crisis[:iso] = crisis_iso
+          crisis[:country] = all_countries.select{ |c| c.iso == crisis_iso}.
+            first.name
+        end
         result[:crisis_aiding] << crisis
       end
     end
