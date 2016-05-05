@@ -1,7 +1,8 @@
 class LayerSerializer < ActiveModel::Serializer
   attributes :slug, :name, :category, :geo_query, :geo_cartocss,
     :layer_type, :legend_type, :number_of_buckets, :sql_template,
-    :active, :legend, :table_name, :domain, :timeline
+    :active, :legend, :table_name, :domain, :timeline, :start_date,
+    :end_date
 
 
   def domain
