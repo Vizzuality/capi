@@ -1,9 +1,10 @@
 class ProjectsStatistics < CartoDb
 
-  attr_reader :end_date
+  attr_reader :end_date, :sectors_slug
 
   def initialize hsh
     @end_date = hsh[:end_date] ? Date.parse(hsh[:end_date]).year : Date.today.year
+    @sectors_slug = hsh[:sectors_slug]
   end
 
   def fetch
@@ -37,9 +38,11 @@ class ProjectsStatistics < CartoDb
   end
 
   def where_clause
-    if @end_date
-      "WHERE year = '#{@end_date}'"
+    q = ["WHERE year = '#{@end_date}'"]
+    if @sectors_slug
+      q << "(#{@sectors_slug.map{|s| "#{s}_people > 0"}.join(" OR ")})"
     end
+    q.join(" AND ")
   end
 
   private
