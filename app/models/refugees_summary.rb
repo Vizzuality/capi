@@ -14,15 +14,13 @@ class RefugeesSummary < CartoDb
     return [] unless @country
     refugees = cached_summary
     return [] unless refugees.present?
-
     {
       "location": {
         "iso": @country["iso"],
         "name": @country["name"]
       },
-      "year": @end_date,
-      "crisis": parse_crisis(refugees)
-    }
+      "year": @end_date
+    }.merge!(parse_crisis(refugees))
   end
 
   def cached_summary
@@ -49,7 +47,7 @@ class RefugeesSummary < CartoDb
   end
 
   def parse_crisis hsh
-    result = []
+    result = { crisis_local: [], crisis_aiding: []}
     hsh.group_by{|t| t["crisis"]}.each do |name, details|
       crisis = {}
       crisis["name"] = name
@@ -60,7 +58,11 @@ class RefugeesSummary < CartoDb
           iso: d["iso"]
         }
       end
-      result << crisis
+      if @country["iso"] == details.first["crisis_iso"]
+        result[:crisis_local] << crisis
+      else
+        result[:crisis_aiding] << crisis
+      end
     end
     result
   end
