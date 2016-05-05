@@ -21,7 +21,7 @@ class RefugeesSummary < CartoDb
         "name": @country["name"]
       },
       "year": @end_date,
-      "crisis": refugees.present? ? parse_crisis(refugees) : {}
+      "crisis": parse_crisis(refugees)
     }
   end
 
