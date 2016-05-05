@@ -25,7 +25,8 @@ class ProjectsStatistics < CartoDb
   def stats_cache_key
     [
       "projects-stats",
-      "#{@end_date}"
+      "#{@end_date}",
+      "#{@sectors_slug ? @sectors_slug.join("_") : ""}"
     ].join("-")
   end
 
