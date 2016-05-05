@@ -12,11 +12,11 @@ class ProjectsSummary < CartoDb
 
   def fetch
     @all_sectors = Sector.cached_all.select{|s| s.filter_for_projects }
-    return [] unless fetch_country
+    @country = Country.fetch_country_for @lat, @lng
+    return [] unless @country
     @results = cached_summary
     puts summary_query
-    refugees = cached_refugees
-    return [] unless @results.present? || refugees.present?
+    return [] unless @results.present?
 
     if @results["w_g_reached"] && @results["w_g_reached"] > 0 &&
         @results["total_peo"].present? && @results["total_peo"] > 0
@@ -36,8 +36,7 @@ class ProjectsSummary < CartoDb
       },
       "sectors": sectors_from,
       "url": "http://www.care.org/country/#{@country["name"].downcase.dasherize}",
-      "year": @end_date,
-      "crisis": refugees.present? ? parse_crisis(refugees) : {}
+      "year": @end_date
     }
   end
 
@@ -72,35 +71,6 @@ class ProjectsSummary < CartoDb
     Rails.cache.fetch(refugees_cache_key, expires_in: 20.days) do
       ProjectsSummary.send_query(refugees_query)["rows"]
     end
-  end
-
-  def refugees_cache_key
-    "refugees-#{@country["iso"]}-#{@end_date}"
-  end
-
-  def refugees_query
-    %(
-     SELECT projects.crisis, projects.country, projects.crisis_iso,
-     projects.iso, projects.year
-     FROM refugees_projects AS projects
-     WHERE projects.crisis_iso = '#{@country["iso"]}'
-     AND year = #{@end_date}
-    )
-  end
-
-  def fetch_country
-    puts country_query
-    @country = ProjectsSummary.send_query(country_query)["rows"].try(:first)
-    @country
-  end
-
-  def country_query
-    %(
-    SELECT iso, name
-    FROM #{Country.table_name} AS countries
-    WHERE ST_CONTAINS(countries.the_geom, ST_SetSRID(ST_MakePoint(
-     #{@lng}, #{@lat}), 4326))
-    )
   end
 
   def where_clause

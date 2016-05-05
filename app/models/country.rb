@@ -20,6 +20,20 @@ class Country < CartoDb
     "countries"
   end
 
+  def self.fetch_country_for lat, lng
+    puts country_query(lat, lng)
+    send_query(country_query(lat, lng))["rows"].try(:first)
+  end
+
+  def self.country_query lat, lng
+    %(
+      SELECT iso, name
+      FROM #{table_name} AS countries
+      WHERE ST_CONTAINS(countries.the_geom, ST_SetSRID(ST_MakePoint(
+      #{lng}, #{lat}), 4326))
+    )
+  end
+
   private
 
   def self.table_name
