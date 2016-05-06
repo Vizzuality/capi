@@ -34,12 +34,13 @@ class ProjectsStatistics < CartoDb
     %Q(
       SELECT SUM(total_peo) AS total_people, SUM(total_projects) AS total_projects
       FROM #{ProjectsStatistics.table_name}
+      WHERE country = 'Grand Total'
       #{where_clause}
     )
   end
 
   def where_clause
-    q = ["WHERE year = '#{@end_date}'"]
+    q = ["AND year = '#{@end_date}'"]
     if @sectors_slug
       q << "(#{@sectors_slug.map{|s| "#{s}_people > 0"}.join(" OR ")})"
     end
