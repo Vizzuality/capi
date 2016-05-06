@@ -17,7 +17,7 @@ class Api::V1::DonationsController < ApiController
   private
 
   def filtering_params
-    params.permit(:lat, :lng, :start_date, :end_dte, :layer_id,
+    params.permit(:lat, :lng, :start_date, :end_date, :layer_id,
                   :zoom, sectors_slug: [], countries_slug: [])
   end
 end
