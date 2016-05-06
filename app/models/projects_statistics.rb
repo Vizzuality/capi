@@ -34,7 +34,7 @@ class ProjectsStatistics < CartoDb
     %Q(
       SELECT SUM(total_peo) AS total_people, SUM(total_projects) AS total_projects
       FROM #{ProjectsStatistics.table_name}
-      WHERE country = 'Grand Total'
+      WHERE country <> 'Grand Total'
       #{where_clause}
     )
   end
