@@ -22,7 +22,7 @@ class Country < CartoDb
 
   def self.fetch_country_for lat, lng
     puts country_query(lat, lng)
-    send_query(country_query(lat, lng))["rows"].try(:first)
+    send_query(country_query(lat, lng))["rows"]
   end
 
   def self.country_query lat, lng

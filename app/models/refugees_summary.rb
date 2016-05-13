@@ -11,13 +11,13 @@ class RefugeesSummary < CartoDb
 
   def fetch
     @country = Country.fetch_country_for @lat, lng
-    return [] unless @country
+    return {} if @country.empty?
     refugees = cached_summary
-    return [] unless refugees.present?
+    return {} unless refugees.present?
     {
       "location": {
-        "iso": @country["iso"],
-        "name": @country["name"]
+        "iso": @country.first["iso"],
+        "name": @country.first["name"]
       },
       "year": @end_date
     }.merge!(parse_crisis(refugees))
@@ -30,7 +30,11 @@ class RefugeesSummary < CartoDb
   end
 
   def summary_cache_key
-    "refugees-summary-#{@country["iso"]}-#{@end_date}"
+    [
+      "refugees-summary",
+      "#{@country.map{|t| t["iso"]}.join("_")}",
+      "#{@end_date}"
+    ].join("-")
   end
 
   def summary_query
@@ -40,8 +44,9 @@ class RefugeesSummary < CartoDb
      FROM refugees_projects AS projects
      WHERE year = #{@end_date}
       AND (
-        projects.crisis_iso = '#{@country["iso"]}' OR
-        projects.iso = '#{@country["iso"]}'
+        projects.crisis_iso IN (#{@country.map{|t| "'#{t["iso"]}'"}.join(",")})
+        OR
+        projects.iso IN (#{@country.map{|t| "'#{t["iso"]}'"}.join(",")})
       )
     )
   end
@@ -50,7 +55,7 @@ class RefugeesSummary < CartoDb
     all_countries = Country.cached_all
     result = { crisis_local: [], crisis_aiding: []}
     hsh.group_by{|t| t["crisis_iso"]}.each do |crisis_iso, details|
-      if crisis_iso == @country["iso"]
+      if @country.map{|t| t["iso"]}.include?(crisis_iso)
         details.group_by{ |t| t["crisis"] }.each do |name, info|
           crisis = {}
           crisis[:name] = name

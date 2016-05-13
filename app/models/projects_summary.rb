@@ -13,10 +13,10 @@ class ProjectsSummary < CartoDb
   def fetch
     @all_sectors = Sector.cached_all.select{|s| s.filter_for_projects }
     @country = Country.fetch_country_for @lat, @lng
-    return [] unless @country
+    return {} if @country.empty?
     @results = cached_summary
     puts summary_query
-    return [] unless @results.present?
+    return {} unless @results.present?
 
     if @results["w_g_reached"] && @results["w_g_reached"] > 0 &&
         @results["total_peo"].present? && @results["total_peo"] > 0
@@ -26,8 +26,8 @@ class ProjectsSummary < CartoDb
     end
     {
       "location": {
-        "iso": @country["iso"],
-        "name": @country["name"]
+        "iso": @results["iso"],
+        "name": @results["country"]
       },
       "totals": {
         "projects": @results["total_projects"],
@@ -35,7 +35,7 @@ class ProjectsSummary < CartoDb
         "women_and_girls": women_percent
       },
       "sectors": sectors_from,
-      "url": "http://www.care.org/country/#{@country["name"].downcase.dasherize}",
+      "url": "http://www.care.org/country/#{@results["country"].downcase.dasherize}",
       "year": @end_date,
       "crisis": [] # TODO: remove once refugees layer from care_usa is merged into master
     }
@@ -50,7 +50,7 @@ class ProjectsSummary < CartoDb
   def summary_cache_key
     [
       "summary",
-      "#{@country["iso"]}",
+      "#{@country.map{|t| t["iso"]}.join("_")}",
       "#{@end_date}",
       "#{@sectors_slug ? @sectors_slug.join("-") : ""}"
     ].join("-")
@@ -63,7 +63,7 @@ class ProjectsSummary < CartoDb
       #{project_cols.join(", ")},
       #{people_cols.join(", ")}
       FROM #{ProjectsSummary.table_name} AS projects
-      WHERE projects.iso = '#{@country["iso"]}'
+      WHERE projects.iso IN (#{@country.map{|t| "'#{t["iso"]}'"}.join(",")})
       #{where_clause}
     )
   end
