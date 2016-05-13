@@ -36,7 +36,8 @@ class ProjectsSummary < CartoDb
       },
       "sectors": sectors_from,
       "url": "http://www.care.org/country/#{@country["name"].downcase.dasherize}",
-      "year": @end_date
+      "year": @end_date,
+      "crisis": [] # TODO: remove once refugees layer from care_usa is merged into master
     }
   end
 
