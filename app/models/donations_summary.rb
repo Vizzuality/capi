@@ -121,15 +121,17 @@ class DonationsSummary < CartoDb
 
   def get_radius_buffer
     if @zoom >= 9
-      0.01
-    elsif [7,8].include?(@zoom)
-      0.03
+      0.05
+    elsif @zoom == 8
+      0.10
+    elsif @zoom == 7
+      0.15
     elsif @zoom == 6
-      0.06
+      0.20
     elsif @zoom == 5
-      0.13
-    elsif @zoom == 4
       0.25
+    elsif @zoom == 4
+      0.35
     elsif @zoom == 3
       0.6
     elsif @zoom == 2
