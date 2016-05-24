@@ -22,7 +22,20 @@ class CartoDb
       send_query(create_in_batch_query(records))
     end
 
+    def find cartodb_id
+      send_query(find_by_query(cartodb_id))["rows"].first
+    end
+
     private
+
+    def find_by_query cartodb_id
+      %Q(
+        SELECT #{columns.join(", ")},
+        ST_Y(the_geom) AS lat, ST_X(the_geom) AS lng
+        FROM #{table_name}
+        WHERE cartodb_id = #{cartodb_id}
+      )
+    end
 
     def list_query
       %Q(

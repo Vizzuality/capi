@@ -14,6 +14,11 @@ class Api::V1::DonationsController < ApiController
     render json: @result
   end
 
+  def show
+    @result = Donation.find(params[:id])
+    render json: @result || {}
+  end
+
   private
 
   def filtering_params
