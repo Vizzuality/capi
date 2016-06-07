@@ -144,6 +144,6 @@ class DonationsSummary < CartoDb
   end
 
   def self.table_name
-    "donors"
+    ENV["DONORS_TABLE"] || "donors"
   end
 end
