@@ -64,6 +64,7 @@ class ProjectsSummary < CartoDb
       #{people_cols.join(", ")}
       FROM #{ProjectsSummary.table_name} AS projects
       WHERE projects.iso IN (#{@country.map{|t| "'#{t["iso"]}'"}.join(",")})
+      AND total_peo > 0
       #{where_clause}
     )
   end
