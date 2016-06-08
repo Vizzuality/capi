@@ -20,6 +20,7 @@ class Donation < CartoDb
   private
 
   def self.formatted_value col, value
+    return nil unless value
     if STRING_COLS.include?(col)
       "'#{value}'"
     elsif NUMBER_COLS.include?(col)
