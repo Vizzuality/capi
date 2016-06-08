@@ -55,10 +55,11 @@ class DonationsSummary < CartoDb
       SUM(amount) AS total_funds,
       COUNT(*) AS total_donors,
       array_agg(
-        CASE WHEN historical_donation = 'f'
-        THEN nickname || '#{DONORS_SEPARATOR}' || amount ||
+        CASE WHEN historical_donation = 't'
+        THEN NULL
+        ELSE nickname || '#{DONORS_SEPARATOR}' || amount ||
         '#{DONORS_SEPARATOR}' || date
-          ELSE NULL END
+        END
       ) AS donations,
       array_agg(array_to_string(countries, ',')) FILTER (
         WHERE countries <> '{}' OR countries IS NOT NULL

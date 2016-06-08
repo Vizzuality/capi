@@ -20,7 +20,7 @@ class Donation < CartoDb
   private
 
   def self.formatted_value col, value
-    return nil unless value
+    return "NULL" unless value.present?
     if STRING_COLS.include?(col)
       "'#{value}'"
     elsif NUMBER_COLS.include?(col)
@@ -30,9 +30,9 @@ class Donation < CartoDb
     elsif ARRAY_COLS.include?(col)
       "ARRAY[#{value.split(",").map{|t| "'#{t}'"}.join(",")}]"
     elsif BOOLEAN_COLS.include?(col)
-      false
+      value
     else
-      nil
+      "NULL"
     end
   end
 
