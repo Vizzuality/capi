@@ -82,7 +82,7 @@ class DonationsSummary < CartoDb
   def where_clause
     q = []
     if @end_date
-      q << "date_trunc('month', date) = date_trunc('month', '#{@end_date}')"
+      q << "date_trunc('month', date) = date_trunc('month', '#{@end_date}'::DATE)"
     end
     if @sectors_slug
       q << ["sectors %26%26 ARRAY[#{@sectors_slug}]"]
