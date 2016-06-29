@@ -70,9 +70,10 @@ class DonationsSummary < CartoDb
       FROM #{DonationsSummary.table_name} AS donors
       WHERE
         ST_CONTAINS(
-          ST_Buffer(ST_SetSRID(ST_MakePoint(#{@lng}, #{@lat}), 4326),
-          #{get_radius_buffer}),
-          donors.the_geom)
+         ST_Buffer(ST_Transform(ST_SetSRID(ST_MakePoint(#{@lng}, #{@lat}), 4326), 3857),
+          CDB_XYZ_Resolution(#{@zoom}) * 8),
+         ST_SnapToGrid(the_geom_webmercator, CDB_XYZ_Resolution(#{@zoom}) * 2)
+        )
       #{where_clause}
       GROUP by city, country, state, country_iso
       ORDER by total_donors DESC, total_funds DESC
