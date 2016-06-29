@@ -32,6 +32,7 @@ class ProjectsSummary < CartoDb
       "totals": {
         "projects": @results["total_projects"],
         "people": @results["total_peo"],
+        "reached_per_pop": @results["reached_per_pop"],
         "women_and_girls": women_percent
       },
       "sectors": sectors_from,
@@ -60,7 +61,7 @@ class ProjectsSummary < CartoDb
     %Q(
       SELECT projects.country, projects.iso,
       total_peo, total_projects, w_g_reached,
-      #{project_cols.join(", ")},
+      (reached_per_pop*100) as reached_per_pop, #{project_cols.join(", ")},
       #{people_cols.join(", ")}
       FROM #{ProjectsSummary.table_name} AS projects
       WHERE projects.iso IN (#{@country.map{|t| "'#{t["iso"]}'"}.join(",")})
