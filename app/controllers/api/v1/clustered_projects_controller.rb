@@ -10,15 +10,15 @@ class Api::V1::ClusteredProjectsController < ApiController
                  bucket: 3,
                  per_sector: [{
                    slug: "food",
-                   color: "#000",
+                   color: "#8C8778",
                    people: 105_500
                  }, {
                    slug: "econ",
-                   color: "#333",
+                   color: "#FDB02A",
                    people: 103_500
                  }, {
                    slug: "educ",
-                   color: "#555",
+                   color: "#9AA78C",
                    people: 92_500
                  }]
                }, {
@@ -30,15 +30,15 @@ class Api::V1::ClusteredProjectsController < ApiController
                  bucket: 2,
                  per_sector: [{
                    slug: "food",
-                   color: "#000",
+                   color: "#8C8778",
                    people: 805_500
                  }, {
                    slug: "econ",
-                   color: "#333",
+                   color: "#FDB02A",
                    people: 635_500
                  }, {
                    slug: "educ",
-                   color: "#555",
+                   color: "#9AA78C",
                    people: 502_500
                  }]
                }, {
@@ -50,15 +50,15 @@ class Api::V1::ClusteredProjectsController < ApiController
                  bucket: 1,
                  per_sector: [{
                    slug: "food",
-                   color: "#000",
+                   color: "#8C8778",
                    people: 8_105_500
                  }, {
                    slug: "econ",
-                   color: "#333",
+                   color: "#FDB02A",
                    people: 5_950_500
                  }, {
                    slug: "educ",
-                   color: "#555",
+                   color: "#9AA78C",
                    people: 3_992_500
                  }]
                }]
@@ -72,27 +72,27 @@ class Api::V1::ClusteredProjectsController < ApiController
                  bucket: 1,
                  per_sector: [{
                    slug: "educ",
-                   color: "#555",
+                   color: "#9AA78C",
                    people: 1_222_500
                  }, {
                    slug: "emer",
-                   color: "#888",
+                   color: "#EBCA5F",
                    people: 999_500
                  }, {
                    slug: "heal",
-                   color: "#333",
+                   color: "#ABD293",
                    people: 500_500
                  }, {
                    slug: "econ",
-                   color: "#222",
+                   color: "#FDB02A",
                    people: 400_500
                  }, {
                    slug: "educ",
-                   color: "#111",
+                   color: "#9AA78C",
                    people: 300_500
                  }, {
                    slug: "wate",
-                   color: "#aaa",
+                   color: "#9DCED6",
                    people: 200_500
                  }]
                }, {
@@ -104,27 +104,27 @@ class Api::V1::ClusteredProjectsController < ApiController
                  bucket: 2,
                  per_sector: [{
                    slug: "econ",
-                   color: "#000",
+                   color: "#FDB02A",
                    people: 990_500
                  }, {
                    slug: "food",
-                   color: "#333",
+                   color: "#8C8778",
                    people: 602_500
                  }, {
                    slug: "emer",
-                   color: "#888",
+                   color: "#EBCA5F",
                    people: 500_500
                  }, {
                    slug: "clim",
-                   color: "#222",
+                   color: "#92b2d7",
                    people: 400_500
                  }, {
                    slug: "educ",
-                   color: "#111",
+                   color: "#9AA78C",
                    people: 300_500
                  }, {
                    slug: "wate",
-                   color: "#aaa",
+                   color: "#9DCED6",
                    people: 200_500
                  }]
                }]
