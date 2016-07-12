@@ -20,14 +20,6 @@ class Api::V1::ClusteredProjectsController < ApiController
                    slug: "educ",
                    color: "#555",
                    people: 92_500
-                 }, {
-                   slug: "emer",
-                   color: "#888",
-                   people: 81_500
-                 }, {
-                   slug: "heal",
-                   color: "#aaa",
-                   people: 75_500
                  }]
                }, {
                  name: "North America",
@@ -48,14 +40,6 @@ class Api::V1::ClusteredProjectsController < ApiController
                    slug: "educ",
                    color: "#555",
                    people: 502_500
-                 }, {
-                   slug: "emer",
-                   color: "#888",
-                   people: 401_500
-                 }, {
-                   slug: "heal",
-                   color: "#aaa",
-                   people: 100_500
                  }]
                }, {
                  name: "Asia",
@@ -76,14 +60,6 @@ class Api::V1::ClusteredProjectsController < ApiController
                    slug: "educ",
                    color: "#555",
                    people: 3_992_500
-                 }, {
-                   slug: "emer",
-                   color: "#888",
-                   people: 991_500
-                 }, {
-                   slug: "heal",
-                   color: "#aaa",
-                   people: 800_000
                  }]
                }]
              else
@@ -104,8 +80,20 @@ class Api::V1::ClusteredProjectsController < ApiController
                    people: 999_500
                  }, {
                    slug: "heal",
-                   color: "#aaa",
+                   color: "#333",
                    people: 500_500
+                 }, {
+                   slug: "econ",
+                   color: "#222",
+                   people: 400_500
+                 }, {
+                   slug: "educ",
+                   color: "#111",
+                   people: 300_500
+                 }, {
+                   slug: "wate",
+                   color: "#aaa",
+                   people: 200_500
                  }]
                }, {
                  name: "West and South Africa",
@@ -119,13 +107,25 @@ class Api::V1::ClusteredProjectsController < ApiController
                    color: "#000",
                    people: 990_500
                  }, {
-                   slug: "educ",
+                   slug: "food",
                    color: "#333",
                    people: 602_500
                  }, {
                    slug: "emer",
                    color: "#888",
+                   people: 500_500
+                 }, {
+                   slug: "clim",
+                   color: "#222",
+                   people: 400_500
+                 }, {
+                   slug: "educ",
+                   color: "#111",
                    people: 300_500
+                 }, {
+                   slug: "wate",
+                   color: "#aaa",
+                   people: 200_500
                  }]
                }]
              end
