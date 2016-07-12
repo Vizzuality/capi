@@ -6,6 +6,7 @@ class Api::V1::ClusteredProjectsController < ApiController
       lat: -2.4601812,
       lng: -59.4140625,
       clustered: true,
+      bucket: 3,
       per_sector: [{
         slug: "food",
         color: "#000",
@@ -33,6 +34,7 @@ class Api::V1::ClusteredProjectsController < ApiController
       lat: 42.0329743,
       lng: -100.1953125,
       clustered: true,
+      bucket: 2,
       per_sector: [{
         slug: "food",
         color: "#000",
@@ -60,6 +62,7 @@ class Api::V1::ClusteredProjectsController < ApiController
       lat: 32.8426736,
       lng: 96.3281250,
       clustered: true,
+      bucket: 1,
       per_sector: [{
         slug: "food",
         color: "#000",
@@ -87,6 +90,7 @@ class Api::V1::ClusteredProjectsController < ApiController
       lat: -26.4312281,
       lng: 140.9765625,
       clustered: false,
+      bucket: 1,
       per_sector: [{
         slug: "educ",
         color: "#555",
@@ -106,6 +110,7 @@ class Api::V1::ClusteredProjectsController < ApiController
       lat: 7.7109917,
       lng: 20.0390625,
       clustered: false,
+      bucket: 2,
       per_sector: [{
         slug: "econ",
         color: "#000",
