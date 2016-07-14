@@ -12,7 +12,7 @@ Rails.application.routes.draw do
       end
       get 'projects', to: 'projects#index'
       get 'projects/refugees', to: 'refugees#index'
-      get 'clustered_projects', to: 'clustered_projects#index'
+      get 'projects_layer', to: 'projects_layer#index'
     end
   end
 
