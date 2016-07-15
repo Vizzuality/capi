@@ -40,9 +40,10 @@ class Layer < CartoDb
 
   private
 
-  def list_query
+  def self.list_query
     %Q(
-      SELECT #{columns.join(", ")} FROM #{table_name}
+      SELECT #{columns.join(", ")}
+      FROM #{table_name}
       WHERE enabled = true
       ORDER BY #{order_column}
     )
