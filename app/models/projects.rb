@@ -9,6 +9,7 @@ class Projects < CartoDb
     @results.map do |r|
       {
         name: r["name"],
+        iso: r["iso"],
         total_people: r["total_people"],
         lat: r["lat"],
         lng: r["lng"],

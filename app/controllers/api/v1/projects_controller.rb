@@ -7,6 +7,6 @@ class Api::V1::ProjectsController < ApiController
   private
 
   def projects_params
-    params.permit(:lat, :lng, :year)
+    params.permit(:iso, :year)
   end
 end

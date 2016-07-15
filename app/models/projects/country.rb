@@ -17,6 +17,7 @@ class Projects::Country < Projects
       ST_Y(ST_Centroid(s.the_geom)) AS lat,
       ST_X(ST_Centroid(s.the_geom)) AS lng,
       s.name, p.year,
+      s.iso,
       p.clim_people AS clim,
       p.econ_people AS econ,
       p.educ_people AS educ,
