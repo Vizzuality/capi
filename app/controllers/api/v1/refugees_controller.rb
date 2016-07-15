@@ -7,6 +7,6 @@ class Api::V1::RefugeesController < ApiController
   private
 
   def refugees_params
-    params.permit(:lat, :lng, :end_date)
+    params.permit(:lat, :lng, :year)
   end
 end
