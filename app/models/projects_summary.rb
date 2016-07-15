@@ -78,7 +78,6 @@ class ProjectsSummary < CartoDb
           @results["#{sector.slug}_projects"] > 0
         sectors << {
           slug: sector.slug,
-          name: sector.name,
           number_projects: @results["#{sector.slug}_projects"],
           number_people: @results["#{sector.slug}_people"],
         }
