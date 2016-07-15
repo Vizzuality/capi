@@ -1,13 +1,12 @@
 class ProjectsSummary < CartoDb
-  COLUMNS = [:lat, :lng, :end_date, :sectors_slug]
+  COLUMNS = [:lat, :lng, :year]
 
   attr_reader *COLUMNS
 
   def initialize(hsh)
     @lat = hsh[:lat]
     @lng = hsh[:lng]
-    @end_date = hsh[:end_date] ? Date.parse(hsh[:end_date]).year : (Date.today.year-1)
-    @sectors_slug = hsh[:sectors_slug]
+    @year = hsh[:year] || (Date.today.year-1)
   end
 
   def fetch
@@ -32,13 +31,11 @@ class ProjectsSummary < CartoDb
       "totals": {
         "projects": @results["total_projects"],
         "people": @results["total_peo"],
-        "reached_per_pop": @results["reached_per_pop"],
         "women_and_girls": women_percent
       },
       "sectors": sectors_from,
       "url": "http://www.care.org/country/#{@results["country"].downcase.dasherize}",
-      "year": @end_date,
-      "crisis": [] # TODO: remove once refugees layer from care_usa is merged into master
+      "year": @year
     }
   end
 
@@ -52,8 +49,7 @@ class ProjectsSummary < CartoDb
     [
       "summary",
       "#{@country.map{|t| t["iso"]}.join("_")}",
-      "#{@end_date}",
-      "#{@sectors_slug ? @sectors_slug.join("-") : ""}"
+      "#{@year}"
     ].join("-")
   end
 
@@ -65,8 +61,7 @@ class ProjectsSummary < CartoDb
       #{people_cols.join(", ")}
       FROM #{ProjectsSummary.table_name} AS projects
       WHERE projects.iso IN (#{@country.map{|t| "'#{t["iso"]}'"}.join(",")})
-      AND total_peo > 0
-      #{where_clause}
+      AND total_peo > 0 AND year = #{@year}
     )
   end
 
@@ -76,19 +71,6 @@ class ProjectsSummary < CartoDb
     end
   end
 
-  def where_clause
-    q = []
-    q << "AND year = #{@end_date}"
-    if @sectors_slug
-      sectors = []
-      @sectors_slug.each do |s|
-        sectors << "#{s}_people <> 0"
-      end
-      q << "(#{sectors.join(" OR ")})"
-    end
-    q.join(" AND ")
-  end
-
   def sectors_from
     sectors = []
     @all_sectors.each do |sector|
@@ -96,30 +78,12 @@ class ProjectsSummary < CartoDb
           @results["#{sector.slug}_projects"] > 0
         sectors << {
           slug: sector.slug,
-          name: sector.name,
           number_projects: @results["#{sector.slug}_projects"],
           number_people: @results["#{sector.slug}_people"],
         }
       end
     end
     sectors.sort{|a,b| b[:number_people] <=> a[:number_people]}
-  end
-
-  def parse_crisis hsh
-    result = []
-    hsh.group_by{|t| t["crisis"]}.each do |name, details|
-      crisis = {}
-      crisis["name"] = name
-      crisis["parties_involved"] = []
-      details.each do |d|
-        crisis["parties_involved"] << {
-          country: d["country"],
-          iso: d["iso"]
-        }
-      end
-      result << crisis
-    end
-    result
   end
 
   private
