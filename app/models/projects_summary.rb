@@ -1,18 +1,15 @@
 class ProjectsSummary < CartoDb
-  COLUMNS = [:lat, :lng, :year]
+  COLUMNS = [:year, :iso]
 
   attr_reader *COLUMNS
 
   def initialize(hsh)
-    @lat = hsh[:lat]
-    @lng = hsh[:lng]
     @year = hsh[:year] || (Date.today.year-1)
+    @iso = hsh[:iso]
   end
 
   def fetch
     @all_sectors = Sector.cached_all.select{|s| s.filter_for_projects }
-    @country = Country.fetch_country_for @lat, @lng
-    return {} if @country.empty?
     @results = cached_summary
     puts summary_query
     return {} unless @results.present?
@@ -25,7 +22,7 @@ class ProjectsSummary < CartoDb
     end
     {
       "location": {
-        "iso": @results["iso"],
+        "iso": @iso,
         "name": @results["country"]
       },
       "totals": {
@@ -48,7 +45,7 @@ class ProjectsSummary < CartoDb
   def summary_cache_key
     [
       "summary",
-      "#{@country.map{|t| t["iso"]}.join("_")}",
+      "#{@iso}",
       "#{@year}"
     ].join("-")
   end
@@ -60,7 +57,7 @@ class ProjectsSummary < CartoDb
       (reached_per_pop*100) as reached_per_pop, #{project_cols.join(", ")},
       #{people_cols.join(", ")}
       FROM #{ProjectsSummary.table_name} AS projects
-      WHERE projects.iso IN (#{@country.map{|t| "'#{t["iso"]}'"}.join(",")})
+      WHERE projects.iso = '#{@iso}'
       AND total_peo > 0 AND year = #{@year}
     )
   end
