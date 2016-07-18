@@ -23,9 +23,7 @@ class Projects::Clustered < Projects
       sum(p.emer_people) AS emer,
       sum(p.food_people) AS food,
       sum(p.heal_people) AS heal,
-      sum(p.refu_people) AS refu,
       sum(p.wate_people) AS wate,
-      sum(p.w_g_reached) w_g_reached,
       sum(p.total_peo) AS total_people,
       ntile(3) over(order by sum(p.total_peo) desc) AS bucket
       FROM borders s
