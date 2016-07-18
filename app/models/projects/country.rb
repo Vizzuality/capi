@@ -24,9 +24,7 @@ class Projects::Country < Projects
       p.emer_people AS emer,
       p.food_people AS food,
       p.heal_people AS heal,
-      p.refu_people AS refu,
       p.wate_people AS wate,
-      p.w_g_reached w_g_reached,
       p.total_peo AS total_people,
       ntile(4) over(order by p.total_peo desc) AS bucket
       FROM borders s

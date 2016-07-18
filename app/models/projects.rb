@@ -27,7 +27,8 @@ class Projects < CartoDb
         color: sector.color,
         people: r[sector.slug] || 0
       }
-    end.sort{ |a,b| b[:people] <=> a[:people] }[0,self.class::SECTORS_LIMIT]
+    end.sort { |a,b| b[:people] <=> a[:people] }[0,self.class::SECTORS_LIMIT].
+    reject { |a| a[:people] <= 0 }
   end
 
   def cached_projects_data
