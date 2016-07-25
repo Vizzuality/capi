@@ -40,6 +40,15 @@ class Layer < CartoDb
 
   private
 
+  def self.list_query
+    %Q(
+      SELECT #{columns.join(", ")}
+      FROM #{table_name}
+      WHERE enabled = true
+      ORDER BY #{order_column}
+    )
+  end
+
   def self.parse data
     return [] unless data["rows"]
     data["rows"].map do |row|
@@ -50,6 +59,6 @@ class Layer < CartoDb
   end
 
   def self.table_name
-    "table_spec"
+    "table_spec_test"
   end
 end

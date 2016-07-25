@@ -1,12 +1,12 @@
 class RefugeesSummary < CartoDb
-  COLUMNS = [:lat, :lng, :end_date]
+  COLUMNS = [:lat, :lng, :year]
 
   attr_reader *COLUMNS
 
   def initialize(hsh)
     @lat = hsh[:lat]
     @lng = hsh[:lng]
-    @end_date = hsh[:end_date] ? Date.parse(hsh[:end_date]).year : (Date.today.year-1)
+    @year = hsh[:year] || (Date.today.year-1)
   end
 
   def fetch
@@ -19,7 +19,7 @@ class RefugeesSummary < CartoDb
         "iso": @country.first["iso"],
         "name": @country.first["name"]
       },
-      "year": @end_date
+      "year": @year
     }.merge!(parse_crisis(refugees))
   end
 
@@ -33,7 +33,7 @@ class RefugeesSummary < CartoDb
     [
       "refugees-summary",
       "#{@country.map{|t| t["iso"]}.join("_")}",
-      "#{@end_date}"
+      "#{@year}"
     ].join("-")
   end
 
@@ -42,7 +42,7 @@ class RefugeesSummary < CartoDb
      SELECT projects.crisis, projects.country, projects.crisis_iso,
      projects.iso, projects.year
      FROM refugees_projects AS projects
-     WHERE year = #{@end_date}
+     WHERE year = #{@year}
       AND (
         projects.crisis_iso IN (#{@country.map{|t| "'#{t["iso"]}'"}.join(",")})
         OR
