@@ -22,13 +22,13 @@ class Donation < CartoDb
   def self.formatted_value col, value
     return "NULL" unless value.present?
     if STRING_COLS.include?(col)
-      "'#{value}'"
+      "#{ActiveRecord::Base::sanitize(value)}"
     elsif NUMBER_COLS.include?(col)
       value
     elsif DATE_COLS.include?(col)
       "'#{Date.parse(value)}'"
     elsif ARRAY_COLS.include?(col)
-      "ARRAY[#{value.split(",").map{|t| "'#{t}'"}.join(",")}]"
+      "ARRAY[#{value.split(",").map{|t| "#{ActiveRecord::Base::sanitize(t)}"}.join(",")}]"
     elsif BOOLEAN_COLS.include?(col)
       value
     else
