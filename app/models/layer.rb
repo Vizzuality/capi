@@ -25,7 +25,7 @@ class Layer < CartoDb
       if result["start_date"].is_a?(Fixnum) && result["end_date"].is_a?(Fixnum)
         @start_date, @end_date = [
           Date.parse("1/1/#{result["start_date"]}"),
-          Date.parse("31/12/#{result["end_date"]}"),
+          Date.parse("1/2/#{result["end_date"]}"),
         ]
       end
     end
