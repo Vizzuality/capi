@@ -26,6 +26,7 @@ class Projects::Country < Projects
       p.heal_people AS heal,
       p.wate_people AS wate,
       p.total_peo AS total_people,
+      p.is_co AS is_country_office,
       ntile(4) over(order by p.total_peo desc) AS bucket
       FROM borders s
       INNER JOIN projects p ON s.iso=p.iso
