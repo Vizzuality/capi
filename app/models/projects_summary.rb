@@ -31,6 +31,7 @@ class ProjectsSummary < CartoDb
         "women_and_girls": women_percent
       },
       "sectors": sectors_from,
+      "is_country_office": @results["is_country_office"]
       "url": "http://www.care.org/country/#{@results["country"].downcase.dasherize}",
       "year": @year
     }
@@ -55,7 +56,8 @@ class ProjectsSummary < CartoDb
       SELECT projects.country, projects.iso,
       total_peo, total_projects, w_g_reached,
       (reached_per_pop*100) as reached_per_pop, #{project_cols.join(", ")},
-      #{people_cols.join(", ")}
+      #{people_cols.join(", ")},
+      is_co AS is_country_office
       FROM #{ProjectsSummary.table_name} AS projects
       WHERE projects.iso = '#{@iso}'
       AND total_peo > 0 AND year = #{@year}
