@@ -13,7 +13,7 @@ class Projects < CartoDb
         total_people: r["total_people"],
         lat: r["lat"],
         lng: r["lng"],
-        is_country_office: r["is_country_office"],
+        is_country_office: r["is_country_office"] || true,
         clustered: self.class == Projects::Clustered ? true : false,
         bucket: r["bucket"],
         per_sector: per_sector_data(r)
