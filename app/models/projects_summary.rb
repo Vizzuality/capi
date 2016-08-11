@@ -31,7 +31,7 @@ class ProjectsSummary < CartoDb
         "women_and_girls": women_percent
       },
       "sectors": sectors_from,
-      "is_country_office": @results["is_country_office"]
+      "is_country_office": @results["is_country_office"],
       "url": "http://www.care.org/country/#{@results["country"].downcase.dasherize}",
       "year": @year
     }
