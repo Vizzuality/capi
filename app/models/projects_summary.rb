@@ -60,7 +60,7 @@ class ProjectsSummary < CartoDb
       is_co AS is_country_office
       FROM #{ProjectsSummary.table_name} AS projects
       WHERE projects.iso = '#{@iso}'
-      AND total_peo > 0 AND year = #{@year}
+      AND total_peo >= 0 AND year = #{@year}
     )
   end
 
