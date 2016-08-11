@@ -30,7 +30,8 @@ class Projects::Country < Projects
       ntile(4) over(order by p.total_peo desc) AS bucket
       FROM borders s
       INNER JOIN projects p ON s.iso=p.iso
-      WHERE year = #{@year.to_i} AND p.total_peo >= 0
+      WHERE year = #{@year.to_i} AND (p.total_peo > 200
+      OR is_co IS false)
     SQL
   end
 end

@@ -1,3 +1,4 @@
+require_dependency 'projects/country'
 class Api::V1::ProjectsLayerController < ApiController
   def index
     result = if params[:zoom] && params[:zoom].to_i < 4
