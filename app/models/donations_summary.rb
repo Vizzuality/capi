@@ -98,10 +98,13 @@ class DonationsSummary < CartoDb
     sectors = []
     @results["sectors_agg"].compact.map{|t| t.split(",")}.flatten.
       group_by{|x| x}.sort_by{|k, v| -v.size}.map(&:first)[0,3].each do |slug|
-      sectors << {
-        slug: slug,
-        name: @all_sectors.select{|s| s.slug == slug}.first.try(:name)
-      }
+      name = @all_sectors.select{|s| s.slug == slug}.first.try(:name)
+      if name
+        sectors << {
+          slug: slug,
+          name: name
+        }
+      end
     end
     sectors
   end
