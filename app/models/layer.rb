@@ -59,6 +59,6 @@ class Layer < CartoDb
   end
 
   def self.table_name
-    "table_spec_test"
+    "table_spec"
   end
 end
