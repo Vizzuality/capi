@@ -12,6 +12,7 @@ class DonationsSummary < CartoDb
     @zoom = hsh[:zoom] ? hsh[:zoom].to_i : 9
     @start_date = hsh[:start_date] ? Date.parse(hsh[:start_date]).strftime("%m-%d-%Y") : nil
     @end_date = hsh[:end_date] ? Date.parse(hsh[:end_date]).strftime("%m-%d-%Y") : nil
+    @end_date_plus_week = hsh[:end_date] ? (Date.parse(hsh[:end_date]) + 1.week).strftime("%m-%d-%Y") : nil
     @sectors_slug = hsh[:sectors_slug] && hsh[:sectors_slug].map {|t| "'#{t}'"}.
       join(",")
     @countries_iso = hsh[:countries_iso] && hsh[:countries_iso].map {|t| "'#{t}'"}.
@@ -83,7 +84,7 @@ class DonationsSummary < CartoDb
   def where_clause
     q = []
     if @end_date
-      q << "date >= '#{@end_date}'::DATE AND date <  ('#{@end_date}'::DATE+7)"
+      q << "date >= '#{@end_date}'::DATE AND date < '#{@end_date_plus_week}'::DATE"
     end
     if @sectors_slug
       q << ["sectors %26%26 ARRAY[#{@sectors_slug}]"]
