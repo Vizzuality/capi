@@ -1,5 +1,5 @@
 class DonationsDistribution < CartoDb
-  COLUMNS = [:lat, :lng, :start_date, :end_date, :sectors_slug,
+  COLUMNS = [:lat, :lng, :end_date, :sectors_slug,
              :countries_iso]
 
   attr_reader *COLUMNS
@@ -7,8 +7,8 @@ class DonationsDistribution < CartoDb
   def initialize(hsh)
     @lat = hsh[:lat]
     @lng = hsh[:lng]
-    @start_date = hsh[:start_date] ? Date.parse(hsh[:start_date]) : nil
-    @end_date = hsh[:end_date] ? Date.parse(hsh[:end_date]) : nil
+    @end_date = hsh[:end_date] ? Date.parse(hsh[:end_date]).strftime("%m-%d-%Y") : nil
+    @end_date_plus_week = hsh[:end_date] ? (Date.parse(hsh[:end_date]) + 1.week).strftime("%m-%d-%Y") : nil
     @sectors_slug = hsh[:sectors_slug] && hsh[:sectors_slug].map {|t| "'#{t}'"}.
       join(",")
     @countries_iso = hsh[:countries_iso] && hsh[:countries_iso].map {|t| "'#{t}'"}.
@@ -38,7 +38,7 @@ class DonationsDistribution < CartoDb
       COUNT(*) AS total_donors
       FROM #{DonationsDistribution.table_name} AS donors
       INNER JOIN #{Country.table_name} AS countries ON
-      countries.iso = donors.country_iso
+      (countries.iso = donors.country_iso OR donors.country = countries.name OR donors.country = countries.admin)
       WHERE ST_CONTAINS(countries.the_geom, ST_SetSRID(ST_MakePoint(
       #{@lng}, #{@lat}), 4326))
       #{where_clause}
@@ -49,8 +49,8 @@ class DonationsDistribution < CartoDb
 
   def where_clause
     q = []
-    if @start_date && @end_date
-      q << "date BETWEEN '#{@start_date}' AND '#{@end_date}'"
+    if @end_date
+      q << "date BETWEEN '#{@end_date}'::DATE AND '#{@end_date_plus_week}'::DATE"
     end
     if @sectors_slug
       q << ["sectors %26%26 ARRAY[#{@sectors_slug}]"]

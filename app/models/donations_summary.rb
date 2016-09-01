@@ -1,5 +1,5 @@
 class DonationsSummary < CartoDb
-  COLUMNS = [:lat, :lng, :start_date, :end_date, :sectors_slug,
+  COLUMNS = [:lat, :lng, :end_date, :sectors_slug,
              :countries_iso, :zoom]
 
   DONORS_SEPARATOR = "###"
@@ -10,7 +10,6 @@ class DonationsSummary < CartoDb
     @lat = hsh[:lat]
     @lng = hsh[:lng]
     @zoom = hsh[:zoom] ? hsh[:zoom].to_i : 9
-    @start_date = hsh[:start_date] ? Date.parse(hsh[:start_date]).strftime("%m-%d-%Y") : nil
     @end_date = hsh[:end_date] ? Date.parse(hsh[:end_date]).strftime("%m-%d-%Y") : nil
     @end_date_plus_week = hsh[:end_date] ? (Date.parse(hsh[:end_date]) + 1.week).strftime("%m-%d-%Y") : nil
     @sectors_slug = hsh[:sectors_slug] && hsh[:sectors_slug].map {|t| "'#{t}'"}.
