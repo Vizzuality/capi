@@ -1,4 +1,29 @@
 class ProjectsSummary < CartoDb
+  COUNTRY_URLS = [
+    ["ALB", "http://www.careinternational.org.uk/countries/albania"],
+    ["AUS", "http://www.care.org.au"],
+    ["AUT", "http://www.care.at"],
+    ["BEL", "http://www.care-international.org/"],
+    ["BIH", "http://www.care.org/country/bosnia-and-herzegovina"],
+    ["CAN", "http://www.care.ca"],
+    ["CHE", "http://www.care-international.org/"],
+    ["CIV", "http://www.care.org/country/cote-divoire"],
+    ["COD", "http://www.care.org/country/democratic-republic-congo"],
+    ["CZE", "http://www.care.cz"],
+    ["DEU", "https://www.care.de/"],
+    ["DNK", "http://www.care.dk"],
+    ["FRA", "http://www.carefrance.org"],
+    ["GBR", "http://www.careinternational.org.uk/"],
+    ["IRQ", nil],
+    ["LKA", "http://www.care.org/country/sri-lanka"],
+    ["PNG", "http://www.care.org/country/papua-new-guinea"],
+    ["SLE", "http://www.care.org/country/sierra-leone"],
+    ["SSD", "http://www.care.org/country/south-sudan"],
+    ["TLS", "http://www.care.org/country/timor-leste"],
+    ["USA", "http://www.care.org"],
+    ["WBG", "http://www.care.org/country/west-bankgaza"]
+  ]
+
   COLUMNS = [:year, :iso]
 
   attr_reader *COLUMNS
@@ -20,6 +45,12 @@ class ProjectsSummary < CartoDb
     else
       women_percent = nil
     end
+    country_match = COUNTRY_URLS.select{|t| t[0] == @iso}.first
+    url = if country_match
+            country_match[1]
+          else
+            "http://www.care.org/country/#{@results["country"].gsub(" ", "-").downcase.dasherize}"
+          end
     {
       "location": {
         "iso": @iso,
@@ -32,7 +63,7 @@ class ProjectsSummary < CartoDb
       },
       "sectors": sectors_from,
       "is_country_office": @results["is_country_office"],
-      "url": "http://www.care.org/country/#{@results["country"].downcase.dasherize}",
+      "url": url,
       "year": @year
     }
   end
