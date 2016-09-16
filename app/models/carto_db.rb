@@ -8,9 +8,14 @@ class CartoDb
       @_model_name ||= ActiveModel::Name.new(self)
     end
 
-    def send_query query
+    def send_query query, get=true
       api_call = Cartowrap::API.new
-      JSON.parse(api_call.send_query(query))
+      result = if get
+                 api_call.send_query(query)
+               else
+                 api_call.post_query(query)
+               end
+      JSON.parse(result)
     end
 
     def all
@@ -19,7 +24,7 @@ class CartoDb
     end
 
     def create_in_batch(records)
-      send_query(create_in_batch_query(records))
+      send_query(create_in_batch_query(records), false)
     end
 
     def find gift_id

@@ -38,8 +38,7 @@ end
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
 gem 'dotenv-rails', groups: [:development, :test]
-gem 'cartowrap', git: 'http://github.com/tiagojsag/cartowrap.git',
-  branch: 'fix/extra-character-in-method'
+gem 'cartowrap', git: 'http://github.com/tiagojsag/cartowrap.git'
 
 gem 'dalli'
 gem 'memcachier'

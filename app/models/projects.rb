@@ -1,4 +1,5 @@
 class Projects < CartoDb
+
   def initialize(hsh)
     @year = hsh[:year]
   end
