@@ -22,6 +22,9 @@ class Donation < CartoDb
   def self.formatted_value col, value
     return "NULL" unless value.present?
     if STRING_COLS.include?(col)
+      if col == :country && "USA" == value
+        value = "United States"
+      end
       "#{ActiveRecord::Base::sanitize(value)}"
     elsif NUMBER_COLS.include?(col)
       value
@@ -51,6 +54,16 @@ class Donation < CartoDb
                                      '#{record["country"]}')
       )
     end
+  end
+
+  def self.update_country_iso_query
+    %Q(
+      UPDATE #{table_name}
+      SET country_iso = borders.iso_a3
+      FROM #{Country.table_name} AS borders
+      WHERE (borders.name = #{table_name}.country OR borders.admin = #{table_name}.country)
+      AND #{table_name}.country_iso IS NULL
+    )
   end
 
   def self.table_name

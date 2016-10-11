@@ -33,7 +33,6 @@ class Country < CartoDb
       #{lng}, #{lat}), 4326))
     )
   end
-
   private
 
   def self.table_name

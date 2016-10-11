@@ -24,7 +24,11 @@ class CartoDb
     end
 
     def create_in_batch(records)
-      send_query(create_in_batch_query(records), false)
+      result = send_query(create_in_batch_query(records), false)
+      if result["rows"]
+        send_query(update_country_iso_query)
+      end
+      result
     end
 
     def find gift_id
