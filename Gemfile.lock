@@ -1,6 +1,6 @@
 GIT
   remote: http://github.com/tiagojsag/cartowrap.git
-  revision: 592bfffddb9149d2e26a2a8ba9393d62c9a33404
+  revision: 6ea678895e238ee561889e9c8a76864fc92bb045
   specs:
     cartowrap (0.1.1)
       faraday
@@ -156,5 +156,8 @@ DEPENDENCIES
   spring-watcher-listen (~> 2.0.0)
   tzinfo-data
 
+RUBY VERSION
+   ruby 2.3.1p112
+
 BUNDLED WITH
-   1.12.5
+   1.13.1
