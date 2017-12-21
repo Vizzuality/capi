@@ -23,7 +23,7 @@ class StoriesStatistics < CartoDb
 
     def stats_query
       %Q(
-        SELECT SUM(total) as total
+        SELECT COUNT(*) as total
         FROM #{StoriesStatistics.table_name}
       )
     end
